@@ -70,8 +70,9 @@
     - [CORS(クロスオリジンリソース共有)ポリシー 対策](#corsクロスオリジンリソース共有ポリシー-対策)
     - [動作確認(単純)](#動作確認単純)
     - [動作確認(OAuth2 認証ほかもろもろ)](#動作確認oauth2-認証ほかもろもろ)
-  - [Fast-API で SSH (HTTPs)を実装する](#fast-api-で-ssh-httpsを実装する)
+  - [Fast-API で SSH (HTTPs)を実装する(生バージョン)](#fast-api-で-ssh-httpsを実装する生バージョン)
     - [pubspec.yaml にhttp... を追加](#pubspecyaml-にhttp-を追加)
+    - [http... を実装](#http-を実装)
   - [FastAPI を HTTPS で動かす](#fastapi-を-https-で動かす)
 
 
@@ -1850,7 +1851,7 @@ Future<void> main() async {
 }
 ```
 
-## Fast-API で SSH (HTTPs)を実装する
+## Fast-API で SSH (HTTPs)を実装する(生バージョン)
 
 - openapi generateor は python版は動いたが dart/flutter版がうまく動かないので生で呼びます
 - たいしてコード生成が楽にもならなかったしな
@@ -1864,6 +1865,11 @@ dependencies:
     sdk: flutter
   http: ^0.13.6
 ```
+
+### http... を実装
+
+- [こんな感じです](./openapi/dart_impl_raw/lib/main.dart)
+
 
 
 ## FastAPI を HTTPS で動かす
