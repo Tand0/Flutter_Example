@@ -1223,7 +1223,8 @@ class LoginNgDialog extends StatelessWidget {
 
 - データの保存はこんな感じ
   - android なら内部データとして保存される
-  - Web や デスクトップででこに保存されるかは分からない。。。
+  - Web はメモリに保存している。保存してもwebを落とせば消える。
+  - デスクトップがどこに保存するかは確かめていない。
   - ファイルへの出力するなら他の枠組みが必要だが、
     さすがにプラットフォーム毎に違う状況
   - いっそネットワークでサーバにデータ転送するのが現実的か
@@ -1772,15 +1773,12 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 ## for CORS start
-origins = [
-    "http://192.168.1.1:42461",
-]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 ## for CORS stop
 
@@ -1789,7 +1787,7 @@ app.add_middleware(
 
 - これで消えない場合は、以下のように記述して起動すれば良い
 ```shell
-flutter run --web-browser-flag "--disable-web-security"
+flutter run --web-browser-flag "--disable-web-security" --device-id chrome
 ```
 
 ### 動作確認(単純)
