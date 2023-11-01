@@ -1,7 +1,7 @@
 {
     "name": "calc",
     "short_name": "calc",
-    "start_url": ".",
+    "start_url": "https://htmlpreview.github.io/?https://github.com/Tand0/Flutter_Example/blob/main/graphic/calc_web/index.html",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
