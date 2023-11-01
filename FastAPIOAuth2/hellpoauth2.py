@@ -43,21 +43,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app = FastAPI()
 
 
-## for CORS start
-origins = [
-    "http://192.168.1.1:42461",
-]
-
+# for CORS start
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
-## for CORS stop
-
-
+# for CORS stop
 
 
 def get_password_hash(password):

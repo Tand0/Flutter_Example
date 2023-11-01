@@ -74,6 +74,10 @@
     - [pubspec.yaml にhttp... を追加](#pubspecyaml-にhttp-を追加)
     - [http... を実装](#http-を実装)
   - [FastAPI を HTTPS で動かす](#fastapi-を-https-で動かす)
+- [グラフを書こう](#グラフを書こう)
+  - [Python による最小二乗法の曲線を書く](#python-による最小二乗法の曲線を書く)
+  - [Dart による最小二乗法の曲線を書く](#dart-による最小二乗法の曲線を書く)
+  - [作ったものをwebで公開する](#作ったものをwebで公開する)
 
 
 
@@ -1772,7 +1776,7 @@ from fastapi.middleware.cors import CORSMiddleware
 …… 中略 ……
 app = FastAPI()
 
-## for CORS start
+# for CORS start
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -1780,7 +1784,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-## for CORS stop
+# for CORS stop
 
 ...後ろ略…
 ```
@@ -1879,14 +1883,164 @@ dependencies:
 - こちらを参照してください
 - https://qiita.com/tomokitamaki/items/53361024711ce71c0324
 
+# グラフを書こう
 
+- 次に考えるのはグラフィカルな表示です
+- 最初のサンプルは最小二乗法による曲線を書くことをやります
+- 元ネタはここを参照しました
+  - https://www.mk-mode.com/blog/2014/03/05/java-least-squares-method/
+  - ――が Java, C++, Ruby, Fotrun というラインナップでした
+  - Python と Dart を追加しましょう
 
+## Python による最小二乗法の曲線を書く
 
+- [こんな感じです](./graphic/calc/calc.py)
+  - 詳細はソースの方を見てください
+  - numpy ちゃんと使え言われるかもしれませんが dart移植前提コードなので許してください
 
+```python
+class LeastSquares():
+    """Calc"""
 
+    b = []
 
+    def do(self, x, y, m):
+        """calc least squares"""
+        s = []
+        for j in range(2 * m + 1):
+            w = 0.0
+            for i in x:
+                w += pow(i, j)
+            s.append(w)
+        t = []
+        for j in range(m + 1):
+            w = 0.0
+            for i, x_one in enumerate(x):
+                w += pow(x_one, j) * y[i]
+            t.append(w)
+        a = []
+        for i, t_one in enumerate(t):
+            aa = []
+            a.append(aa)
+            for j in range(len(t)):
+                aa.append(s[i + j])
+            aa.append(t_one)
+        for k in range(len(t)):
+            p = a[k][k]
+            for j in range(len(t) + 1):
+                a[k][j] /= p
+            for i in range(len(t)):
+                if (i != k):
+                    d = a[i][k]
+                    for j in range(k, len(t) + 1):
+                        a[i][j] -= d * a[k][j]
+        self.b = []
+        for k, a_one in enumerate(a):
+            self.b.append(a_one[len(a_one) - 1])
 
+    def retrun_x_to_y(self, px):
+        """return py"""
+        py = 0
+        for k, b_one in enumerate(self.b):
+            py += b_one * pow(px, k)
+        return py
+```
+![作図された画像](./graphic/calc/calc_py.png)
 
+## Dart による最小二乗法の曲線を書く
+
+- [こんな感じです](./graphic/calc/lib/main.dart)
+  - 詳細はソースの方を見てください
+  - ストリーム＆λ式を使えばもっとスマートな書き方ができると思いますが
+  - めんどくさいので後回しです
+```dart
+class LeastSquares {
+  List<double> b = [];
+  void calc(List<double> x, List<double> y, int m) {
+    List<double> s = [];
+    for (int j = 0; j < 2 * m + 1; j++) {
+      double w = 0.0;
+      for (double i in x) {
+        w += pow(i, j);
+      }
+      s.add(w);
+    }
+    List<double> t = [];
+    for (int j = 0; j < m + 1; j++) {
+      double w = 0.0;
+      for (int i = 0; i < x.length; i++) {
+        w += pow(x[i], j) * y[i];
+      }
+      t.add(w);
+    }
+    List<List<double>> a = [];
+    for (int i = 0; i < t.length; i++) {
+      List<double> aa = [];
+      a.add(aa);
+      for (int j = 0; j < t.length; j++) {
+        aa.add(s[i + j]);
+      }
+      aa.add(t[i]);
+    }
+    for (int k = 0; k < t.length; k++) {
+      double p = a[k][k];
+      for (int j = 0; j < t.length + 1; j++) {
+        a[k][j] /= p;
+      }
+      for (int i = 0; i < t.length; i++) {
+        if (i != k) {
+          double d = a[i][k];
+          for (int j = k; j < t.length + 1; j++) {
+            a[i][j] -= d * a[k][j];
+          }
+        }
+      }
+    }
+    b = [];
+    for (int k = 0; k < a.length; k++) {
+      b.add(a[k][a[k].length - 1]);
+    }
+  }
+
+  double retrunXtoY(double px) {
+    double py = 0.0;
+    for (int k = 0; k < b.length; k++) {
+      py += b[k] * pow(px, k);
+    }
+    return py;
+  }
+}
+```
+
+![作図された画像](./graphic/calc/calc_dart.png)
+
+## 作ったものをwebで公開する
+
+- 作成したものはwebサーバにアップロードすれば公開できます
+  - まず flutter 側で以下を実行します
+  - すると buid/web にアップロード用のファイルが置かれるので
+  - それをftpなりgitなりでアップロードしてください。
+
+```
+$ flutter build web
+```
+
+- 注意点としては アップロードするファイルの一部を修正する必要があることです
+- 一つ目は index.html です
+  - head の base タグを配置する箇所のカレントフォルダにします
+```
+  <base href="https://tand0.github.io/Flutter_Example/calc_web/">
+```
+
+- ２つ目は manifest.json です
+  - start_url で起動する flutter ファイルの URL を指定します
+```json
+ "start_url": "https://tand0.github.io/Flutter_Example/calc_web/index.html",
+```
+- するとこんな感じになることが確認できます
+  - https://tand0.github.io/Flutter_Example/calc_web/index.html
+
+- Python よりも書く分量が多いですが、苦労分だけかっこよく見えます
 
 
 
