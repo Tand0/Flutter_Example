@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'RootData.dart';
 import 'MyData.dart';
+import 'MyTable.dart';
 import 'dart:convert';
 import 'dart:math';
 
@@ -59,7 +60,8 @@ class MyGraph extends StatelessWidget {
         appBar: AppBar(
             title: Text(title),
             leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.popUntil(
+                  context, ModalRoute.withName(MyApp.callName)),
               icon: const Icon(Icons.arrow_back_ios),
             )),
         body: Row(children: [
@@ -145,19 +147,10 @@ class _MyCustomPainter extends CustomPainter {
   void setPoint(
       BuildContext context, RootData rootData, double boxX, double boxY) {
     double realX = getBoxXToRealX(boxX);
-    print("boxXMin =" + boxXMin.toString());
-    print("boxX1   =" + boxX.toString());
-    print("boxXMax =" + boxXMax.toString());
-    print("realXMin=" + realXMin.toString());
-    print("realX1  =" + realX.toString());
-    print("realXMax=" + realXMax.toString());
-    print("xLog10Fl=" + xLog10Flag.toString());
     if (xLog10Flag) {
       realX = pow(10.0, realX / 10.0) as double;
-      print("realX2=" + realX.toString());
     }
     double realY = getBoxYToRealY(boxY);
-    print("realY1=" + realY.toString());
     if (yLog10Flag) {
       realY = pow(10.0, realY / 10.0) as double;
       // print("realY2=" + realY.toString());

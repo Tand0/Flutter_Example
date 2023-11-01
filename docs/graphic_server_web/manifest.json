@@ -1,7 +1,7 @@
 {
     "name": "graphic",
     "short_name": "graphic",
-    "start_url": "https://tand0.github.io/Flutter_Example/graphic_server_web/index.html",
+    "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
