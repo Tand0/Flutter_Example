@@ -5,7 +5,7 @@ class RootData with ChangeNotifier {
   Map<String, WidgetBuilder> _route = {};
 
   RootData() {
-    route[MyApp.callName] = (BuildContext context) => const MyApp();
+    route[MyTable.callName] = (BuildContext context) => const MyTable();
   }
 
   set route(s) {
@@ -22,7 +22,24 @@ class RootData with ChangeNotifier {
     return name;
   }
 
-  String getTopRouteName(BuildContext context) {
+  String get1stRouteName(BuildContext context) {
+    String? name = getRouteName(context);
+    List<String> nameList = name.split('/');
+    bool flag = true;
+    for (String name in nameList) {
+      if (name == '') {
+        continue; // top folder
+      }
+      if (flag) {
+        flag = false; // this is display name
+        continue;
+      }
+      return name;
+    }
+    return '';
+  }
+
+  String getLastRouteName(BuildContext context) {
     String name = getRouteName(context);
     List<String> nameList = name.split('/');
     if (nameList.isEmpty) {

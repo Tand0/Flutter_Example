@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'RootData.dart';
 import 'MyData.dart';
-import 'MyTable.dart';
 import 'dart:convert';
 import 'dart:math';
 
@@ -10,6 +9,9 @@ class MyGraph extends StatelessWidget {
   const MyGraph({Key? key}) : super(key: key);
 
   static const String callName = "/Graph";
+  static const String title = "title";
+  static const String xTitle = "xTitle";
+  static const String yTitle = "yTitle";
   static const String xLine = "xLine";
   static const String yLine = "yLine";
   static const String xLog10 = "xLog10";
@@ -26,6 +28,11 @@ class MyGraph extends StatelessWidget {
   static const String arrowStart = "arrowStart";
   static const String arrowEnd = "arrowEnd";
   static List defaultValueLine = [
+    {color: '0xff0000f0'},
+    {strokeWidth: 1.0},
+    {line: true}
+  ];
+  static List defaultValueArrow = [
     {color: '0xff0000ff'},
     {strokeWidth: 2.0},
     {line: true},
@@ -60,16 +67,19 @@ class MyGraph extends StatelessWidget {
         appBar: AppBar(
             title: Text(title),
             leading: IconButton(
-              onPressed: () => Navigator.popUntil(
-                  context, ModalRoute.withName(MyApp.callName)),
+              onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back_ios),
             )),
         body: Row(children: [
           NavigationRail(
             destinations: const [
               NavigationRailDestination(
-                icon: Icon(Icons.data_object),
+                icon: Icon(Icons.line_axis),
                 label: Text('Create Line'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.line_style),
+                label: Text('Create Arrow'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.add_box),
@@ -89,8 +99,10 @@ class MyGraph extends StatelessWidget {
               if (index == 0) {
                 getTarget(context, rootData, defaultValueLine);
               } else if (index == 1) {
-                getTarget(context, rootData, defaultValueFill);
+                getTarget(context, rootData, defaultValueArrow);
               } else if (index == 2) {
+                getTarget(context, rootData, defaultValueFill);
+              } else if (index == 3) {
                 getTarget(context, rootData, defaultValueSpline);
               } else {
                 getTarget(context, rootData, defaultValueText);
@@ -113,26 +125,28 @@ class MyGraph extends StatelessWidget {
   }
 
   void getTarget(BuildContext context, RootData rootData, List defaultValue) {
-    String lastString = '';
-    var topValue = rootData.getTopRouteValue(context);
-    var deepCopyValue = json.decode(jsonEncode(defaultValue));
-    if (topValue is Map) {
-      if (!topValue.containsKey(group)) {
-        topValue[group] = deepCopyValue;
-      }
-      lastString = group;
-    } else if (topValue is List) {
-      topValue.add({group: deepCopyValue});
-      lastString = (topValue.length - 1).toString();
-      lastString += '/';
-      lastString += group;
-    } else {
-      lastString = group;
+    String name = rootData.get1stRouteName(context);
+    var myData = rootData.lists[name];
+    if (!myData.containsKey(MyGraph.group)) {
+      myData[MyGraph.group] = [];
     }
+    var groupData = myData[MyGraph.group];
+    if (groupData is! List) {
+      return;
+    }
+    //
+    var deepCopyValue = json.decode(jsonEncode({MyGraph.group: defaultValue}));
+    //
+    groupData.add(deepCopyValue);
     String target = MyData.callName;
-    target += rootData.getCutCallNameRouteName(context);
     target += '/';
-    target += lastString;
+    target += name;
+    target += '/';
+    target += MyGraph.group;
+    target += '/';
+    target += (groupData.length - 1).toString();
+    target += '/';
+    target += MyGraph.group;
     rootData.pushNamed(
         context, target, (BuildContext context) => const MyData());
   }
@@ -299,17 +313,16 @@ class _MyCustomPainter extends CustomPainter {
           realXMax = get10Log10(realXMax);
         }
         for (double realX in realList) {
-          if (xLog10Flag) {
-            realX = get10Log10(realX);
-          }
-          String message = realX.toString();
           TextPainter text = TextPainter(
             textDirection: TextDirection.ltr,
             text: TextSpan(
               style: sampleTextStyle,
-              text: message,
+              text: realX.toString(),
             ),
           )..layout();
+          if (xLog10Flag) {
+            realX = get10Log10(realX);
+          }
           double boxX = getRealXToBoxX(realX);
           double textX = boxX - (text.size.width / 2);
           double textY = boxYMax + 5;
@@ -330,17 +343,16 @@ class _MyCustomPainter extends CustomPainter {
           realYMax = get10Log10(realYMax);
         }
         for (double realY in realList) {
-          if (yLog10Flag) {
-            realY = get10Log10(realY);
-          }
-          String message = realY.toString();
           TextPainter text = TextPainter(
             textDirection: TextDirection.ltr,
             text: TextSpan(
               style: sampleTextStyle,
-              text: message,
+              text: realY.toString(),
             ),
           )..layout();
+          if (yLog10Flag) {
+            realY = get10Log10(realY);
+          }
           double boxY = getRealYToBoxY(realY);
           double textX = boxXMin - text.size.width - 5;
           double textY = boxY - (text.size.height / 2);
@@ -349,6 +361,49 @@ class _MyCustomPainter extends CustomPainter {
           canvas.drawLine(Offset(boxXMin, boxY), Offset(boxXMax, boxY), paintX);
         }
       }
+    }
+    if (topValue.containsKey(MyGraph.title)) {
+      String title = topValue[MyGraph.title].toString();
+      TextPainter text = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          style: sampleTextStyle,
+          text: title.toString(),
+        ),
+      )..layout();
+      double textX = (boxXMax - boxXMin) / 2 - (text.size.width / 2) + boxXMin;
+      double textY = boxYMin - text.size.height * 2;
+      var offset = Offset(textX, textY);
+      text.paint(canvas, offset);
+    }
+    if (topValue.containsKey(MyGraph.xTitle)) {
+      String title = topValue[MyGraph.xTitle].toString();
+      TextPainter text = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          style: sampleTextStyle,
+          text: title.toString(),
+        ),
+      )..layout();
+      double textX = boxXMax - (text.size.width / 2);
+      double textY = boxYMax + text.size.height + 5;
+      text.paint(canvas, Offset(textX, textY));
+      var offset = Offset(textX, textY);
+      text.paint(canvas, offset);
+    }
+    if (topValue.containsKey(MyGraph.yTitle)) {
+      String title = topValue[MyGraph.yTitle].toString();
+      TextPainter text = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          style: sampleTextStyle,
+          text: title.toString(),
+        ),
+      )..layout();
+      double textX = boxXMin - text.size.width - 5;
+      double textY = boxYMin - (text.size.height * 3 / 2);
+      var offset = Offset(textX, textY);
+      text.paint(canvas, offset);
     }
     if (topValue.containsKey(MyGraph.group)) {
       paintNext(canvas, size, topValue[MyGraph.group]);

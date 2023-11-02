@@ -53,7 +53,7 @@ class StorageManagementService {
       'Accept': 'application/json',
     }).timeout(const Duration(milliseconds: 10));
     int statusCode = response.statusCode;
-    print("Statsu code=$statusCode");
+    // print("Statsu code=$statusCode");
     if (statusCode != 200) {
       throw MyException("Statsu code=$statusCode");
     }
@@ -71,7 +71,7 @@ class StorageManagementService {
             body: jsonEncode(body))
         .timeout(const Duration(milliseconds: 10));
     int statusCode = result.statusCode;
-    print("Statsu code=$statusCode");
+    // print("Statsu code=$statusCode");
     if (statusCode != 200) {
       throw MyException("Statsu code=$statusCode");
     }

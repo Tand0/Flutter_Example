@@ -187,9 +187,12 @@ t-ando@t-ando2:~/work/flutter/hello_world/lib$ kill -KILL 50558
 ### hello world -- Windows での Chrome 指定しての起動
 
 - Edge なども指定できるが Visual studio のインストールが必要だと思われる
+  - 動作中のコンソールに対して r ボタンを押すとホットリロードが掛かるので
+  - 開発するときはこちらを使うと早く作業ができる
 ```shell
 flutter run --device-id chrome
 ```
+
 
 ## Dart – hello world
 
@@ -2040,22 +2043,20 @@ class LeastSquares {
 $ flutter build web
 ```
 
-- 注意点としては アップロードするファイルの一部を修正する必要があることです
-- 一つ目は index.html です
-  - head の base タグを配置する箇所のカレントフォルダにします
+- もしアップロード先が分かっている場合のコマンドは以下です
+  - URL が以下の場合となります
+  - https://tand0.github.io/Flutter_Example/calc_web/
+
+```
+$ flutter build web --base-href /Flutter_Example/calc_web/
+```
+
+- いちどアップロードした後、書き方がわからなくなった場合は
+  - build/web にある index.html を開きます
+  - head の base タグで確認してください
 ```
   <base href="https://tand0.github.io/Flutter_Example/calc_web/">
 ```
-
-- ２つ目は manifest.json です
-  - start_url で起動する flutter ファイルの URL を指定します
-```json
- "start_url": "https://tand0.github.io/Flutter_Example/calc_web/index.html",
-```
-- するとこんな感じになることが確認できます
-  - https://tand0.github.io/Flutter_Example/calc_web/index.html
-
-- Python よりも書く分量が多いですが、苦労分だけかっこよく見えます
 
 
 # 雑にグラフを書く

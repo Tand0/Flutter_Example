@@ -10,5 +10,5 @@ void main() {
     ChangeNotifierProvider<RootData>(
       create: (context) => data,
     ),
-  ], child: MaterialApp(initialRoute: MyApp.callName, routes: data.route)));
+  ], child: MaterialApp(initialRoute: MyTable.callName, routes: data.route)));
 }

@@ -39,7 +39,7 @@ class _MyData extends State<MyData> {
           },
           child: const Text("Add"))));
       target.add(const DataCell(Text("--")));
-      if (rootData.getTopRouteName(context) == MyGraph.group) {
+      if (rootData.getLastRouteName(context) == MyGraph.group) {
         target.add(DataCell(TextButton(
             onPressed: () {
               String callName = MyGraph.callName;

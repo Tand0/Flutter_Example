@@ -5,10 +5,11 @@ import 'package:table/src/MyGraph.dart';
 import 'RootData.dart';
 import 'MySave.dart';
 import 'MyData.dart';
+import 'MyJson.dart';
 import 'dart:convert';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyTable extends StatelessWidget {
+  const MyTable({super.key});
 
   static const String callName = "/Table";
 
@@ -86,6 +87,10 @@ class MyApp extends StatelessWidget {
                 icon: Icon(Icons.save),
                 label: Text('Save'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.view_array),
+                label: Text('View'),
+              ),
             ],
             selectedIndex: null,
             onDestinationSelected: (index) {
@@ -99,9 +104,12 @@ class MyApp extends StatelessWidget {
                           max: nameList.length,
                           oldName: '');
                     });
-              } else {
+              } else if (index == 1) {
                 rootData.pushNamed(context, MySave.callName,
                     (BuildContext context) => const MySave());
+              } else {
+                rootData.pushNamed(context, MyJson.callName,
+                    (BuildContext context) => const MyJson());
               }
             },
           ),
@@ -208,6 +216,9 @@ class _MyItemDialog extends State<MyItemDialog> {
               // This is init data.
               Map<String, dynamic> defaultValue = {};
               defaultValue[MyGraph.group] = [];
+              defaultValue[MyGraph.title] = name;
+              defaultValue[MyGraph.xTitle] = "XXX";
+              defaultValue[MyGraph.yTitle] = "YYY";
               if (_flagX) {
                 defaultValue[MyGraph.xLine] = [0.0001, 0.001, 0.01, 0.1, 1.0];
                 defaultValue[MyGraph.xLog10] = true;
