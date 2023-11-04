@@ -2505,12 +2505,8 @@ value = json.decode(jsonEncode(value));
 - 10秒間に１回警報がでるという地獄のような状況を作り出しました
 - 警報の中身をみても何言ってるかわかりません
 - あなたならどうしますか？
-
   - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
- - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
-```
-$ flutter build web --base-href /Flutter_Example/calc_web/
-```
+  - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 
 ## ランダムな文字列を作る
 
