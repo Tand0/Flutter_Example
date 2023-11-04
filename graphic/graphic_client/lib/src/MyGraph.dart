@@ -387,7 +387,6 @@ class _MyCustomPainter extends CustomPainter {
       )..layout();
       double textX = boxXMax - (text.size.width / 2);
       double textY = boxYMax + text.size.height + 5;
-      text.paint(canvas, Offset(textX, textY));
       var offset = Offset(textX, textY);
       text.paint(canvas, offset);
     }
@@ -472,7 +471,9 @@ class _MyCustomPainter extends CustomPainter {
             break;
           case MyGraph.fill:
             fillFlag = cleanUpBool(valueNext);
-            paintX.style = PaintingStyle.fill;
+            if (fillFlag) {
+              paintX.style = PaintingStyle.fill;
+            }
             break;
           case MyGraph.arrowStart:
             arrowStartFlag = cleanUpBool(valueNext);

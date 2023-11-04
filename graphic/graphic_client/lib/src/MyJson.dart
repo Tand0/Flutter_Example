@@ -42,20 +42,6 @@ class _MyJson extends State<MyJson> {
     });
   }
 
-  Future<void> goAction(
-      BuildContext context, RootData rootData, int index) async {
-    switch (index) {
-      case 0: // save
-        save(context, rootData);
-        break;
-      case 1:
-        load(context, rootData);
-        break;
-      default:
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final RootData rootData = Provider.of<RootData>(context, listen: true);
@@ -64,7 +50,7 @@ class _MyJson extends State<MyJson> {
     //
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Save/Load"),
+          title: const Text("Display Json"),
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back_ios),

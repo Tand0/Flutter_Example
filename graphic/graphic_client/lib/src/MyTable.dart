@@ -7,6 +7,7 @@ import 'MySave.dart';
 import 'MyData.dart';
 import 'MyJson.dart';
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyTable extends StatelessWidget {
   const MyTable({super.key});
@@ -91,6 +92,10 @@ class MyTable extends StatelessWidget {
                 icon: Icon(Icons.view_array),
                 label: Text('View'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.policy),
+                label: Text('Privacy Policy'),
+              ),
             ],
             selectedIndex: null,
             onDestinationSelected: (index) {
@@ -107,9 +112,13 @@ class MyTable extends StatelessWidget {
               } else if (index == 1) {
                 rootData.pushNamed(context, MySave.callName,
                     (BuildContext context) => const MySave());
-              } else {
+              } else if (index == 2) {
                 rootData.pushNamed(context, MyJson.callName,
                     (BuildContext context) => const MyJson());
+              } else {
+                final url =
+                    Uri.parse('https://github.com/Tand0/Flutter_Example/');
+                launchUrl(url);
               }
             },
           ),

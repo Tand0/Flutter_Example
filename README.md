@@ -40,12 +40,13 @@
   - [Dart – hello\_world](#dart--hello_world)
   - [Dart – ファイルを分離する](#dart--ファイルを分離する)
   - [Dart – 変数の受け渡し](#dart--変数の受け渡し)
-  - [StatefulWidget でデータの受け渡し](#statefulwidget-でデータの受け渡し)
+  - [Dart - StatefulWidget でデータの受け渡し](#dart---statefulwidget-でデータの受け渡し)
   - [Dart – 画面遷移](#dart--画面遷移)
   - [Dart – 画面遷移とデータの受け渡しの組み合わせ](#dart--画面遷移とデータの受け渡しの組み合わせ)
-  - [Alert Dialog](#alert-dialog)
+  - [Dart - Alert Dialog](#dart---alert-dialog)
   - [Dart - リスト選択](#dart---リスト選択)
   - [テーブル表示](#テーブル表示)
+  - [テキスト入力関連](#テキスト入力関連)
   - [データの保存関連](#データの保存関連)
   - [テーブルの行の追加や削除、テーブルの行の選択](#テーブルの行の追加や削除テーブルの行の選択)
   - [プロセス起動関連](#プロセス起動関連)
@@ -72,6 +73,7 @@
     - [動作確認(OAuth2 認証ほかもろもろ)](#動作確認oauth2-認証ほかもろもろ)
   - [Fast-API で SSH (HTTPs)を実装する(生バージョン)](#fast-api-で-ssh-httpsを実装する生バージョン)
     - [pubspec.yaml にhttp... を追加](#pubspecyaml-にhttp-を追加)
+    - [参考：pubspec.yaml をもっと簡単に](#参考pubspecyaml-をもっと簡単に)
     - [http... を実装](#http-を実装)
   - [FastAPI を HTTPS で動かす](#fastapi-を-https-で動かす)
   - [Docker 化について](#docker-化について)
@@ -81,6 +83,30 @@
   - [作ったものをwebで公開する](#作ったものをwebで公開する)
 - [雑にグラフを書く](#雑にグラフを書く)
   - [雑にグラフを書くときに使ったワザとか](#雑にグラフを書くときに使ったワザとか)
+    - [キャンバスの使い方](#キャンバスの使い方)
+    - [キャンバスのクリックに反応](#キャンバスのクリックに反応)
+    - [グラフ上のx,y と画面上の x,y の変換](#グラフ上のxy-と画面上の-xy-の変換)
+    - [グラフと対数変換](#グラフと対数変換)
+      - [グラフと対数変換](#グラフと対数変換-1)
+      - [グラフと対数逆変換](#グラフと対数逆変換)
+    - [テキストの書き方](#テキストの書き方)
+      - [テキストのサイズの書き方](#テキストのサイズの書き方)
+    - [塗りつぶし](#塗りつぶし)
+    - [線を引く](#線を引く)
+      - [線に矢印を入れる](#線に矢印を入れる)
+    - [四角形を書く](#四角形を書く)
+    - [線の太さと色](#線の太さと色)
+      - [色関係](#色関係)
+      - [16進数字変換](#16進数字変換)
+- [android に乗せて公開したい](#android-に乗せて公開したい)
+  - [外部へのリンクを作る](#外部へのリンクを作る)
+  - [操作内容の動画を取る](#操作内容の動画を取る)
+- [雑にネットワーク設計の図を作る](#雑にネットワーク設計の図を作る)
+  - [Class の情報を Json 化する](#class-の情報を-json-化する)
+- [雑に警報を作る](#雑に警報を作る)
+  - [ランダムな文字列を作る](#ランダムな文字列を作る)
+  - [今の時刻を取得する](#今の時刻を取得する)
+  - [定期的に処理を実行する](#定期的に処理を実行する)
 
 
 
@@ -924,7 +950,7 @@ class MyApp extends StatelessWidget {
   - rootData 内で notifyListeners() が呼ばれます
   - 下位の Widget に情報更新が伝達されます
 
-## StatefulWidget でデータの受け渡し
+## Dart - StatefulWidget でデータの受け渡し
 - この Provider 方式はソースファイルを複数に分割するような大規模コーディング時に使います
 - もっと簡単であれば StatefulWidget を使います
 
@@ -1072,7 +1098,7 @@ class MyAppNext extends StatelessWidget {
 ```
 
 
-## Alert Dialog
+## Dart - Alert Dialog
 
 - 呼び出し側 -- ボタンが呼ばれたときに差し込む
 ```dart
@@ -1227,6 +1253,30 @@ class LoginNgDialog extends StatelessWidget {
     return target;
   }
 ```
+
+## テキスト入力関連
+
+- TextFiled を使います
+  - はまるとしたら以下くらいでしょう
+
+- こちら複数行指定
+```dart
+                      TextField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          controller: myController)
+```
+
+- こちら入力文字制限
+```dart
+          Container(
+              alignment: Alignment.centerLeft,
+              width: 200,
+              child: TextField(inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))
+              ], controller: dialogController))
+```
+
 
 ## データの保存関連
 
@@ -1872,6 +1922,18 @@ dependencies:
     sdk: flutter
   http: ^0.13.6
 ```
+### 参考：pubspec.yaml をもっと簡単に
+
+- pubspec.yaml を書くのがめんどうなときは
+- インストールするパッケージを指定して以下のように記述すれば
+- 雑にインストールが可能です
+  - ここでは url_launcher がパッケージ名です
+
+```shell
+flutter pub add url_launcher
+```
+
+
 
 ### http... を実装
 
@@ -2072,20 +2134,434 @@ $ flutter build web --base-href /Flutter_Example/calc_web/
 - ソースコード関連
   - [クライアント側はこんな感じです](./graphic/graphic_client/lib)
   - [サーバ側はこんな感じです](./graphic/graphic_server/)
-  - [実際の動作はこんな感じです](https://tand0.github.io/Flutter_Example/graphic_server_web/index.html)
-- 画面はこんな感じです
-
-
-
+  - [実際の動作はこんな感じです](https://tand0.github.io/Flutter_Example/graphic_client_web/index.html)
 
 ## 雑にグラフを書くときに使ったワザとか
-- これから書きます
-- TBA
 
 
+### キャンバスの使い方
+
+- 画面上でお絵描きする場合につかいます
+  - [ソースコードはこのあたりです](./graphic/graphic_client/lib/src/MyGraph.dart)
+```dart
+CustomPaint(painter: _MyCustomPainter(value)))
 ```
-$ flutter build web --base-href /Flutter_Example/graphic_server_web/
+ - _MyCustomPainter では CustomPainter を extends します
+ - value はデータ受け渡しのために独自作ったものです
+
+```dart
+class _MyCustomPainter extends CustomPainter {
+  final Map topValue;
+  _MyCustomPainter(this.topValue) {
+    //
+  }
 ```
+
+ - _MyCustomPainter の中で以下の２つを override して絵を書いていきます
+
+```dart
+  @override
+  void paint(Canvas canvas, Size size) {
+    //
+    //
+    //
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+```
+
+### キャンバスのクリックに反応
+
+- ジェスチャーを使用します
+  - ついでのポイントとしては画面の大きさが小さいときは Expanded 等で囲って大きくする必要があることです 
+  - まず Wiget として以下のように記述します
+```dart
+          Expanded(
+              child: SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: GestureDetector(
+                      onTapUp: (details) {
+                        //
+                        double dx = details.localPosition.dx;
+                        double dy = details.localPosition.dy;
+                        me.setPoint(context, rootData, dx, dy);
+                      },
+                      child: CustomPaint(painter: me))))
+```
+
+
+### グラフ上のx,y と画面上の x,y の変換
+  - paint では canvas が渡されるのでここに書く内容を入れていきます
+  - しかしグラフの場合、グラフ上の数値と画面上の数値とで変換が必要になりますので
+  - 初めに変換と逆変換をできるようにします
+
+```dart
+  double getBoxXToRealX(double boxX) {
+    return realXMin +
+        (realXMax - realXMin) * (boxX - boxXMin) / (boxXMax - boxXMin);
+  }
+
+  double getBoxYToRealY(double boxY) {
+    return realYMax -
+        (realYMax - realYMin) * (boxY - boxYMin) / (boxYMax - boxYMin);
+  }
+
+  double getRealXToBoxX(double realX) {
+    return boxXMin +
+        (boxXMax - boxXMin) * (realX - realXMin) / (realXMax - realXMin);
+  }
+
+  double getRealYToBoxY(double realY) {
+    return boxYMax -
+        (boxYMax - boxYMin) * (realY - realYMin) / (realYMax - realYMin);
+  }
+```
+### グラフと対数変換
+
+ - グラフが対数であった場合は log10 で変換 10^X で逆変換が必要になります
+ - それぞれ以下のようになります
+
+#### グラフと対数変換
+
+  - これで 10*log10(w) です
+```dart
+  double get10Log10(double w) {
+    return 10.0 * log(w) / ln10;
+  }
+```
+
+#### グラフと対数逆変換
+
+ -  逆変換なので 先に10で割っています
+
+```dart
+realX = pow(10.0, realX / 10.0) as double;
+```
+
+### テキストの書き方
+- こんな感じです
+```dart
+    const sampleTextStyle = TextStyle(color: Colors.black, fontSize: 12);
+    final text = TextPainter(
+      textDirection: TextDirection.ltr,
+      text: const TextSpan(
+        style: sampleTextStyle,
+        text: 'musure text len',
+      ),
+    )..layout();
+    text.paint(canvas, Offset(textX, textY));
+```
+#### テキストのサイズの書き方
+
+- テキストオブジェクトを作ったら以下で取れます
+  - 細かい位置調整に無いとこまるのです
+  - text.size.width
+  - text.size.height
+
+### 塗りつぶし
+
+- まず paint オブジェクトで 塗りつぶしモードにします
+
+```dart
+ - paintX.style = PaintingStyle.fill;
+```
+
+- 次に多角形を描けば塗りつぶせます
+```dart
+      var path = Path();
+      path.moveTo(getRealXToBoxX(plotListX[0]), getRealYToBoxY(plotListY[0]));
+      for (int i = 1; i < plotListX.length; i++) {
+        double boxNewX = getRealXToBoxX(plotListX[i]);
+        double boxNewY = getRealYToBoxY(plotListY[i]);
+        path.lineTo(boxNewX, boxNewY);
+      }
+```
+
+### 線を引く
+
+- drawLine で一発で引けます
+```
+canvas.drawLine(Offset(boxX, boxY), Offset(boxNewX, boxNewY), paintX);
+```
+
+#### 線に矢印を入れる
+
+- 線に矢印を入れる場合は 先っぽに三角形を角度を付けて入れます
+  - 矢印の長さが0のときは atan2() がおかしくなるので引けません
+```
+      if ((boxAX == boxZX) && (boxAY == boxZY)) {
+        // pass
+      } else {
+        double dX = boxZX - boxAX;
+        double dY = boxZY - boxAY;
+        double angle = atan2(dY, dX) + pi;
+        double arrowSize = paintX.strokeWidth * 8.0;
+        double arrowAngle = 25.0 * pi / 180.0;
+        final path = Path();
+        path.moveTo(boxAX - arrowSize * cos(angle - arrowAngle),
+            boxAY - arrowSize * sin(angle - arrowAngle));
+        path.lineTo(boxAX, boxAY);
+        path.lineTo(boxAX - arrowSize * cos(angle + arrowAngle),
+            boxAY - arrowSize * sin(angle + arrowAngle));
+        path.close();
+        canvas.drawPath(path, paintX);
+      }
+```
+
+### 四角形を書く
+
+- こんな感じです
+```dart
+        var path = Path();
+        path.moveTo(boxX - 3, boxY - 3);
+        path.lineTo(boxX + 3, boxY - 3);
+        path.lineTo(boxX + 3, boxY + 3);
+        path.lineTo(boxX - 3, boxY + 3);
+        path.close();
+        canvas.drawPath(path, paintX);
+```
+
+### 線の太さと色
+
+- Colors.XXX を paint オブジェクトに投入します
+- paintX.strokeWidth が線の太さになります
+```
+    paintX.color = Colors.black38;
+    paintX.strokeWidth = 1.0;
+```
+
+#### 色関係
+
+- 細かい色の制御がしたいときは Color を paint オブジェクトに投入します
+- 色は 0xffffffff 形式です
+- 最初の ff が 透明度の16進、次が R, G, B です
+
+```dart
+paintX.color = Color(cleanUpInt(valueNext));
+```
+
+#### 16進数字変換
+
+- ユーザーに 16進の文字列で色指定をさせようとすると必要になります
+  - 16進文字列("0xffffffff")をintに変換するには次のようにします
+  - int.tryParseで16進変換をするのですが 0x があると正常動作しないので
+  - substringで取る必要があります
+
+```dart
+  int cleanUpInt(var value) {
+    if (value is bool) {
+      return value ? 1 : 0;
+    } else if (value is int) {
+      return value;
+    } else if (value is double) {
+      return value.toInt();
+    } else if (value is String) {
+      if (value.contains(RegExp('^0x'))) {
+        return int.tryParse(value.substring(2), radix: 16) ?? 0;
+      }
+    }
+    return 0;
+  }
+```
+
+
+
+
+# android に乗せて公開したい
+
+- android studio で雑に作って動作確認
+- google play console に登録
+- enjoy!
+
+## 外部へのリンクを作る
+
+- google play にアップロードしたいとしましょう
+- プライバシーポリシーへのリンクが必要になります
+- その書き方です
+
+```dart
+                final url =
+                    Uri.parse('https://github.com/Tand0/Flutter_Example/');
+                launchUrl(url);
+```
+
+## 操作内容の動画を取る
+
+- youtube に公開しておくと googleplayさまの覚えもよくなります
+- (XBOX Game Bar )[https://support.xbox.com/ja-JP/help/games-apps/game-setup-and-play/get-to-know-game-bar-on-windows-10]
+
+
+# 雑にネットワーク設計の図を作る
+
+![画面はこんな感じです](./graphic/alert/sample_alarm.png)
+  - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
+  - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert/index.html)
+
+- 雑にネットワーク構成の図とか作ってみました
+
+## Class の情報を Json 化する
+
+- 実際にネットワークとは繋がりません
+- サーバとの接続は以前に FastAPI との接続の解説を書いたのでお仕事でやる人はそちらをみてください
+- FastAPI とデータをやり取りするときはデータを Json にするのが便利です
+- でも Flutter 側でデータを Class で持っている場合はどうしたら良いでしょう？
+
+- そんなときには fromJson と toJson を使います
+  - これだけで Class と Json の変換や逆変換ができます
+```dart
+class Link {
+  String componentIDA;
+  String componentIDZ;
+  Link(this.componentIDA, this.componentIDZ);
+
+  Link.fromJson(Map<String, dynamic> json)
+      : componentIDA = json['componentIDA'],
+        componentIDZ = json['componentIDZ'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'componentIDA': componentIDA,
+      'componentIDZ': componentIDZ,
+    };
+  }
+}
+```
+
+- データの中にリストとか入ってる場合は次のようにします
+
+```dart
+  factory Component.fromJSON(Map<String, dynamic> jsonResult) {
+    var result = Component(
+        null, // danger
+        jsonResult['componentID'],
+        jsonResult['name'],
+        jsonResult['x'],
+        jsonResult['y'],
+        jsonResult['width'],
+        jsonResult['height']);
+    result.isLock = jsonResult['isLock'];
+    result.isSmall = jsonResult['isSmall'];
+    result.detail = jsonResult['detail'];
+    //
+    var list = jsonResult['childList'] as List;
+    result.childList = list.map((i) => Component.fromJSON(i)).toList();
+    return result;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'componentID': componentID,
+      'name': name,
+      'x': x,
+      'y': y,
+      'width': width,
+      'height': height,
+      'isLock': isLock,
+      'isSmall': isSmall,
+      'detail': detail,
+      'childList': childList.map((e) => e.toJson()).toList(),
+    };
+  }
+```
+
+- 使い方としてはこんな感じです
+  - ね？　簡単でしょ？
+```dart
+    // text の Json データを取り出して
+    final object = json.decode(text);
+
+    // 突っ込むだけ
+    Alarm alarm = Alarm.fromJson(object);
+```
+
+- 逆方向はこんな感じ
+  - ね？　簡単でしょ？
+```dart
+    // データを作って
+    Alarm alarm = xxxx
+
+    // 突っ込むだけで Json のテキストができあがる
+    text = const JsonEncoder.withIndent('    ').convert(alarm);
+```
+  
+- あとは Json を経由した deep copy とかかな？
+  - ちょっとしたコードならすごく便利に使えます
+```dart
+value = json.decode(jsonEncode(value));
+```
+
+# 雑に警報を作る
+
+- 10秒間に１回警報がでるという地獄のような状況を作り出しました
+- 警報の中身をみても何言ってるかわかりません
+- あなたならどうしますか？
+
+![画面はこんな感じです](./graphic/alert/sample_network.png)
+  - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
+ - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert/index.html)
+```
+$ flutter build web --base-href /Flutter_Example/calc_web/
+```
+
+## ランダムな文字列を作る
+
+- こちらを参照
+  - https://pryogram.com/flutter/generate-random-string/
+
+- 雑にランダムな IPv4 アドレスの作成方法は以下です
+```dart
+    String ip =
+        "${random.nextInt(253) + 1}.${random.nextInt(253) + 1}.${random.nextInt(253) + 1}.${random.nextInt(253) + 1}";
+```
+
+## 今の時刻を取得する
+
+- こうです。i18n とか凝った表示は調べましょう
+```dart
+// 取得
+DateTime now = DateTime.now();
+
+// 文字列変換
+  String getDateTime() {
+    return dateTime.toIso8601String();
+  }
+```
+
+## 定期的に処理を実行する
+
+- StatefulWidget に以下１セットで書きます
+- バックグラウンドで動かしたいならなるべく GUI のルートの方に StatefulWidget 置きましょう
+
+```dart
+  @override
+  void initState() {
+    _timer = Timer.periodic(Duration(seconds: timer), (_) {
+      doTimer();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void doTimer() {
+    // 定期実行処理
+  }
+```
+
+
+
+
+
+
+
+
 
 
 

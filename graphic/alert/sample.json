@@ -1,0 +1,247 @@
+{
+    "alarmList": [],
+    "componentMap": {
+        "componentID": "TOP",
+        "name": "TOP",
+        "x": 2,
+        "y": 2,
+        "width": 640,
+        "height": 768,
+        "isLock": false,
+        "isSmall": false,
+        "detail": "",
+        "childList": [
+            {
+                "componentID": "N6H.QX4Eohn3.w.",
+                "name": "Location",
+                "x": 87,
+                "y": 21,
+                "width": 64,
+                "height": 64,
+                "isLock": false,
+                "isSmall": true,
+                "detail": "",
+                "childList": []
+            },
+            {
+                "componentID": "ilD12u8VGksu.kE",
+                "name": "Location",
+                "x": 43,
+                "y": 174,
+                "width": 574,
+                "height": 216,
+                "isLock": false,
+                "isSmall": false,
+                "detail": "",
+                "childList": [
+                    {
+                        "componentID": "UlgjKYfv111pOXF",
+                        "name": "Node",
+                        "x": 30,
+                        "y": 66,
+                        "width": 256,
+                        "height": 128,
+                        "isLock": false,
+                        "isSmall": false,
+                        "detail": "",
+                        "childList": [
+                            {
+                                "componentID": "AIi5LEopOIKAo5e",
+                                "name": "Port",
+                                "x": 13,
+                                "y": 37,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "sJjURXxACdfsB6g",
+                                "name": "Port",
+                                "x": 103,
+                                "y": 41,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "skAK7vYL0C60_CV",
+                                "name": "Port",
+                                "x": 179,
+                                "y": 40,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            }
+                        ]
+                    },
+                    {
+                        "componentID": "mPQ116c0ezmu7ju",
+                        "name": "Node",
+                        "x": 310,
+                        "y": 72,
+                        "width": 256,
+                        "height": 128,
+                        "isLock": false,
+                        "isSmall": false,
+                        "detail": "",
+                        "childList": [
+                            {
+                                "componentID": "vM.Z19od_tleww.",
+                                "name": "Port",
+                                "x": 14,
+                                "y": 31,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "LD0nZ0TR0s.LG8y",
+                                "name": "Port",
+                                "x": 91,
+                                "y": 35,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "qlCFy3xaKJVtM4b",
+                                "name": "Port",
+                                "x": 179,
+                                "y": 40,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "componentID": "9bKSHR7ZN3ws-zM",
+                "name": "Location",
+                "x": 48,
+                "y": 457,
+                "width": 512,
+                "height": 256,
+                "isLock": false,
+                "isSmall": false,
+                "detail": "",
+                "childList": [
+                    {
+                        "componentID": "M-fsiPQgGquXsUp",
+                        "name": "Node",
+                        "x": 62,
+                        "y": 58,
+                        "width": 291,
+                        "height": 115,
+                        "isLock": false,
+                        "isSmall": false,
+                        "detail": "",
+                        "childList": [
+                            {
+                                "componentID": "fXyJ.kDVQPRrO-Y",
+                                "name": "Port",
+                                "x": 24,
+                                "y": 35,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "bOAqrt-VIKyTErQ",
+                                "name": "Port",
+                                "x": 110,
+                                "y": 37,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            },
+                            {
+                                "componentID": "ElQctCRzRCbDAzn",
+                                "name": "Port",
+                                "x": 188,
+                                "y": 35,
+                                "width": 64,
+                                "height": 64,
+                                "isLock": false,
+                                "isSmall": false,
+                                "detail": "",
+                                "childList": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "componentID": "8jCnQRuP3BbHTBM",
+                "name": "Location",
+                "x": 83,
+                "y": 727,
+                "width": 64,
+                "height": 707,
+                "isLock": false,
+                "isSmall": true,
+                "detail": "",
+                "childList": []
+            },
+            {
+                "componentID": "0gBF1JVDvdNO2og",
+                "name": "Location",
+                "x": 119,
+                "y": 404,
+                "width": 512,
+                "height": 256,
+                "isLock": false,
+                "isSmall": true,
+                "detail": "",
+                "childList": []
+            }
+        ]
+    },
+    "linkList": [
+        {
+            "componentIDA": "skAK7vYL0C60_CV",
+            "componentIDZ": "0gBF1JVDvdNO2og"
+        },
+        {
+            "componentIDA": "skAK7vYL0C60_CV",
+            "componentIDZ": "qlCFy3xaKJVtM4b"
+        },
+        {
+            "componentIDA": "N6H.QX4Eohn3.w.",
+            "componentIDZ": "qlCFy3xaKJVtM4b"
+        },
+        {
+            "componentIDA": "bOAqrt-VIKyTErQ",
+            "componentIDZ": "8jCnQRuP3BbHTBM"
+        },
+        {
+            "componentIDA": "bOAqrt-VIKyTErQ",
+            "componentIDZ": "0gBF1JVDvdNO2og"
+        }
+    ]
+}
