@@ -2493,6 +2493,12 @@ class Link {
 value = json.decode(jsonEncode(value));
 ```
 
+- サンプルで作った Json ファイルをここにおきます
+  - [./graphic/alert/sample.json](./graphic/alert/sample.json)
+  - これでコピー＆ペーストでネットワーク設計画面ができあがりです
+
+
+
 # 雑に警報を作る
 
 - 10秒間に１回警報がでるという地獄のような状況を作り出しました
