@@ -2396,7 +2396,7 @@ paintX.color = Color(cleanUpInt(valueNext));
 
 # 雑にネットワーク設計の図を作る
 
-![画面はこんな感じです](./graphic/alert/sample_alarm.png)
+![画面はこんな感じです](./graphic/alert/sample_network.png)
   - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
   - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 
@@ -2493,6 +2493,7 @@ class Link {
 value = json.decode(jsonEncode(value));
 ```
 
+![画面はこんな感じです](./graphic/alert/sample_alarm.png)
 - サンプルで作った Json ファイルをここにおきます
   - [./graphic/alert/sample.json](./graphic/alert/sample.json)
   - これでコピー＆ペーストでネットワーク設計画面ができあがりです
@@ -2505,7 +2506,6 @@ value = json.decode(jsonEncode(value));
 - 警報の中身をみても何言ってるかわかりません
 - あなたならどうしますか？
 
-![画面はこんな感じです](./graphic/alert/sample_network.png)
   - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
  - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 ```
