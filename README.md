@@ -2398,7 +2398,7 @@ paintX.color = Color(cleanUpInt(valueNext));
 
 ![画面はこんな感じです](./graphic/alert/sample_alarm.png)
   - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
-  - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert/index.html)
+  - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 
 - 雑にネットワーク構成の図とか作ってみました
 
@@ -2501,7 +2501,7 @@ value = json.decode(jsonEncode(value));
 
 ![画面はこんな感じです](./graphic/alert/sample_network.png)
   - [ソースコードはこのあたりです](./graphic/alert/lib/main.dart)
- - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert/index.html)
+ - [実際動かすとこんな感じです](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 ```
 $ flutter build web --base-href /Flutter_Example/calc_web/
 ```
