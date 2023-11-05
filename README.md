@@ -2576,6 +2576,7 @@ DateTime now = DateTime.now();
     ![サンプル1](./3dexample/sample02.png)
     ![サンプル2](./3dexample/sample03.png)
     ![サンプル2](./3dexample/sample04.png)
+    ![サンプル2](./3dexample/sample05.png)
 
   - [コードはこんな感じです](./3dexample/lib/src/MyGraph3D.dart)
   - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/3dexample_web/index.html)
