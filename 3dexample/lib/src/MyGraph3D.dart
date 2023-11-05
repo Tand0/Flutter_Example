@@ -1,64 +1,27 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'MyGraphCaller.dart';
 
-abstract class MyGraphCaller {
-  double _xMin = 0;
-  double _yMin = 0;
-  double _zMin = 0;
-  double _xMax = 100;
-  double _yMax = 100;
-  double _zMax = 100;
-  get xMin => _xMin;
-  set xMin(x) {
-    _xMin = x;
-  }
+class MyGraph3D extends StatelessWidget {
+  const MyGraph3D({Key? key}) : super(key: key);
 
-  get yMin => _yMin;
-  set yMin(a) {
-    _yMin = a;
-  }
-
-  get xMax => _xMax;
-  set xMax(a) {
-    _xMax = a;
-  }
-
-  get yMax => _yMax;
-  set yMax(a) {
-    _yMax = a;
-  }
-
-  get zMin => _zMin;
-  set zMin(a) {
-    _zMin = a;
-  }
-
-  get zMax => _zMax;
-  set zMax(a) {
-    _zMax = a;
-  }
-
-  double call(double x, double y);
-}
-
-class MyGraph extends StatelessWidget {
-  const MyGraph({Key? key}) : super(key: key);
-
-  static const String callName = "/Graph";
-  static const String title = "3D sample";
+  static const String callName = "/Graph3D";
+  static const String _title = "3D sample";
 
   @override
   Widget build(BuildContext context) {
     var x = ModalRoute.of(context)!.settings.arguments;
     Widget me;
-    if (x is MyGraphCaller) {
+    String title = _title;
+    if (x is MyGraphCaller3D) {
       me = CustomPaint(painter: _MyCustomPainter(x));
+      title = x.title;
     } else {
       me = const Text('caller not found.');
     }
     return Scaffold(
         appBar: AppBar(
-            title: const Text(title),
+            title: Text(title),
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back_ios),
@@ -69,7 +32,7 @@ class MyGraph extends StatelessWidget {
 }
 
 class _MyCustomPainter extends CustomPainter {
-  final MyGraphCaller myGraphCaller;
+  final MyGraphCaller3D myGraphCaller;
   _MyCustomPainter(this.myGraphCaller);
 
   @override
@@ -133,7 +96,7 @@ class _MyCustomPainter extends CustomPainter {
       drawLine(g, sizeX, point1, point2, paintX);
       double rz = z * (myGraphCaller.zMax - myGraphCaller.zMin) / size +
           myGraphCaller.zMin;
-      drawString(g, sizeX, rz.toString(), point2, -15, 5, textStyle);
+      drawString(g, sizeX, rz.toStringAsFixed(1), point2, -15, 5, textStyle);
     }
     for (int x = 0; x <= size; x += size ~/ 5) {
       Point point1 = changeTo2D(x, 0, 0);
@@ -142,7 +105,7 @@ class _MyCustomPainter extends CustomPainter {
       drawLine(g, sizeX, point1, point2, paintX);
       double rx = x * (myGraphCaller.xMax - myGraphCaller.xMin) / size +
           myGraphCaller.xMin;
-      drawString(g, sizeX, rx.toString(), point2, -15, 0, textStyle);
+      drawString(g, sizeX, rx.toStringAsFixed(1), point2, -15, 0, textStyle);
     }
     for (int y = 0; y <= size; y += size ~/ 5) {
       Point point1 = changeTo2D(size, y, 0);
@@ -151,7 +114,7 @@ class _MyCustomPainter extends CustomPainter {
       drawLine(g, sizeX, point1, point2, paintX);
       double ry = y * (myGraphCaller.yMax - myGraphCaller.yMin) / size +
           myGraphCaller.yMin;
-      drawString(g, sizeX, ry.toString(), point2, 0, 5, textStyle);
+      drawString(g, sizeX, ry.toStringAsFixed(1), point2, 0, 5, textStyle);
     }
 
     // x,y,z 文字を入れる

@@ -1,40 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'MyGraph.dart';
+import 'MyGraphCaller.dart';
+import 'MyGraph3D.dart';
+import 'MyGraph2D.dart';
 import 'RootData.dart';
 import 'dart:math' as math;
 
-class MyGraphCallerFlat extends MyGraphCaller {
+class MyGraphCallerFlat extends MyGraphCaller3D {
+  MyGraphCallerFlat() {
+    title = "z=10";
+  }
   @override
   double call(double x, double y) {
     return 10;
   }
 }
 
-class MyGraphCallerFlat2 extends MyGraphCaller {
+class MyGraphCallerFlat2 extends MyGraphCaller3D {
+  MyGraphCallerFlat2() {
+    title = "z=80";
+  }
   @override
   double call(double x, double y) {
     return 80;
   }
 }
 
-class MyGraphCallerMath extends MyGraphCaller {
+class MyGraphCallerMath extends MyGraphCaller3D {
+  MyGraphCallerMath() {
+    title = "math.cos(math.sqrt(x * x + y * y) / 10.0)";
+    xMin = -100;
+    xMax = 100;
+    yMin = -100;
+    yMax = 100;
+    zMin = -1;
+    zMax = 1;
+  }
   @override
   double call(double x, double y) {
-    x = x - 50;
-    y = y - 50;
-    return 50 * math.cos(math.sqrt(x * x + y * y) / 10.0) + 50;
+    return math.cos(math.sqrt(x * x + y * y) / 10.0);
   }
 }
 
-class MyGraphCaller0od1 extends MyGraphCaller {
+class MyGraphCaller0od1 extends MyGraphCaller3D {
   MyGraphCaller0od1() {
+    title = "0 or 1";
     xMin = -5;
     xMax = 5;
     yMin = -5;
     yMax = 5;
     zMin = 0;
-    zMax = 2;
+    zMax = 1.5;
   }
 
   @override
@@ -46,6 +62,104 @@ class MyGraphCaller0od1 extends MyGraphCaller {
   }
 }
 
+class MyGraphCallerX2p2XYp3 extends MyGraphCaller3D {
+  MyGraphCallerX2p2XYp3() {
+    title = "2 + x * x + 2 * x * y + 3";
+    xMin = -2;
+    xMax = 2;
+    yMin = -2;
+    yMax = 2;
+    zMin = 2;
+    zMax = 24;
+  }
+
+  @override
+  double call(double x, double y) {
+    return 2 + x * x + 2 * x * y + 3;
+  }
+}
+
+class MyGraphCallerExp extends MyGraphCaller3D {
+  MyGraphCallerExp() {
+    title = "(2.0 * x * x + y * y) * math.exp(-(2 * x * x + y * y))";
+    xMin = -2;
+    xMax = 2;
+    yMin = -2;
+    yMax = 2;
+    zMin = 0;
+    zMax = 0.5;
+  }
+
+  @override
+  double call(double x, double y) {
+    return (2.0 * x * x + y * y) * math.exp(-(2 * x * x + y * y));
+  }
+}
+
+class MyGraphCaller2DXtoY extends MyGraphCaller2D {
+  MyGraphCaller2DXtoY() {
+    title = "2d x=y,2x, x^2";
+    xMin = -2;
+    xMax = 2;
+    yMin = -2;
+    yMax = 2;
+  }
+
+  @override
+  List<double> call(double x) {
+    return [x, 2 * x, x * x];
+  }
+}
+
+class MyGraphCaller2DExp extends MyGraphCaller2D {
+  MyGraphCaller2DExp() {
+    title = "2d y=a^x";
+    xMin = -4;
+    xMax = 4;
+    yMin = 0;
+    yMax = 10;
+  }
+
+  @override
+  List<double> call(double x) {
+    return [
+      math.pow(2.0, x) as double,
+      math.pow(3.0, x) as double,
+      math.pow(0.5, x) as double
+    ];
+  }
+}
+
+class MyGraphCaller2DLog extends MyGraphCaller2D {
+  MyGraphCaller2DLog() {
+    title = "2d y=x, y=2^x, y=log x";
+    xMin = -8;
+    xMax = 8;
+    yMin = -8;
+    yMax = 8;
+  }
+
+  @override
+  List<double> call(double x) {
+    return [x, math.pow(2.0, x) as double, x <= 0 ? 0 : math.log(x) / math.ln2];
+  }
+}
+
+class MyGraphCallerSigmoid extends MyGraphCaller2D {
+  MyGraphCallerSigmoid() {
+    title = "2d y=1/(1 + exp(-x))";
+    xMin = -10;
+    xMax = 10;
+    yMin = -1.5;
+    yMax = 1.5;
+  }
+
+  @override
+  List<double> call(double x) {
+    return [1 / (1 + math.exp(-x))];
+  }
+}
+
 class MySelect extends StatelessWidget {
   const MySelect({super.key});
 
@@ -54,48 +168,37 @@ class MySelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RootData nodeData = Provider.of<RootData>(context, listen: true);
+    List<MyGraphCaller> callerList = [
+      MyGraphCallerFlat(),
+      MyGraphCallerFlat2(),
+      MyGraphCaller0od1(),
+      MyGraphCallerX2p2XYp3(),
+      MyGraphCallerMath(),
+      MyGraphCallerExp(),
+      MyGraphCaller2DXtoY(),
+      MyGraphCaller2DExp(),
+      MyGraphCaller2DLog(),
+      MyGraphCallerSigmoid()
+    ];
+    List<GestureDetector> widgetList = [];
+    for (MyGraphCaller caller in callerList) {
+      widgetList.add(GestureDetector(
+          child: Text(caller.title),
+          onTap: () {
+            nodeData.pushNamed(
+                context,
+                caller is MyGraphCaller2D
+                    ? MyGraph2D.callName
+                    : MyGraph3D.callName,
+                (BuildContext context) => caller is MyGraphCaller2D
+                    ? const MyGraph2D()
+                    : const MyGraph3D(),
+                caller);
+          }));
+    }
+
     return Scaffold(
         appBar: AppBar(title: const Text("3D Sample List")),
-        body: Center(
-            child: Column(children: [
-          GestureDetector(
-              child: const Text('Flat 3D', style: TextStyle(fontSize: 24)),
-              onTap: () {
-                nodeData.pushNamed(
-                    context,
-                    MyGraph.callName,
-                    (BuildContext context) => const MyGraph(),
-                    MyGraphCallerFlat());
-              }),
-          GestureDetector(
-              child: const Text('Flat 3D-2', style: TextStyle(fontSize: 24)),
-              onTap: () {
-                nodeData.pushNamed(
-                    context,
-                    MyGraph.callName,
-                    (BuildContext context) => const MyGraph(),
-                    MyGraphCallerFlat2());
-              }),
-          GestureDetector(
-              child:
-                  const Text('Flat 3D complex', style: TextStyle(fontSize: 24)),
-              onTap: () {
-                nodeData.pushNamed(
-                    context,
-                    MyGraph.callName,
-                    (BuildContext context) => const MyGraph(),
-                    MyGraphCallerMath());
-              }),
-          GestureDetector(
-              child:
-                  const Text('Flat 3D 0 or 1', style: TextStyle(fontSize: 24)),
-              onTap: () {
-                nodeData.pushNamed(
-                    context,
-                    MyGraph.callName,
-                    (BuildContext context) => const MyGraph(),
-                    MyGraphCaller0od1());
-              }),
-        ])));
+        body: Center(child: Column(children: widgetList)));
   }
 }

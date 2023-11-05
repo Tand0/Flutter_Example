@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'src/MyGraph.dart';
+import 'src/MySelect.dart';
 import 'src/RootData.dart';
 
 void main() {
@@ -10,5 +10,5 @@ void main() {
     ChangeNotifierProvider<RootData>(
       create: (context) => data,
     ),
-  ], child: MaterialApp(initialRoute: MyGraph.callName, routes: data.route)));
+  ], child: MaterialApp(initialRoute: MySelect.callName, routes: data.route)));
 }

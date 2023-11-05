@@ -109,6 +109,7 @@
   - [定期的に処理を実行する](#定期的に処理を実行する)
 - [雑に 3Dグラフを作る](#雑に-3dグラフを作る)
   - [pushudName で引数を付けて渡す](#pushudname-で引数を付けて渡す)
+  - [2D も一緒にやろう](#2d-も一緒にやろう)
 
 
 
@@ -2576,7 +2577,7 @@ DateTime now = DateTime.now();
     ![サンプル2](./3dexample/sample03.png)
     ![サンプル2](./3dexample/sample04.png)
 
-  - [コードはこんな感じです](./3dexample/lib/src/MyGraph.dart)
+  - [コードはこんな感じです](./3dexample/lib/src/MyGraph3D.dart)
   - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/3dexample_web/index.html)
 
   - グラフィック関連は見れば分かるかな？
@@ -2610,4 +2611,12 @@ DateTime now = DateTime.now();
   ...
 ```
 
+## 2D も一緒にやろう
+
+- ちょっと書き換えたら2Dも関数ベースでできました
+- こんな感じです
+  
+  ![サンプル11](./3dexample/sample11.png)
+  ![サンプル12](./3dexample/sample12.png)
+  ![サンプル12](./3dexample/sample13.png)
 
