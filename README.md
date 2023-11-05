@@ -107,6 +107,8 @@
   - [ランダムな文字列を作る](#ランダムな文字列を作る)
   - [今の時刻を取得する](#今の時刻を取得する)
   - [定期的に処理を実行する](#定期的に処理を実行する)
+- [雑に 3Dグラフを作る](#雑に-3dグラフを作る)
+  - [pushudName で引数を付けて渡す](#pushudname-で引数を付けて渡す)
 
 
 
@@ -2557,15 +2559,55 @@ DateTime now = DateTime.now();
   }
 ```
 
+# 雑に 3Dグラフを作る
 
+- ちょっと AI を触っていて 3Dグラフが書きたくなったので探しました
+  - https://pub.dev/packages/flutter_echarts
+  - しかし最新バージョンだと flutter の最新バージョンで 
+  - null チェックがどーのこーのとかいうエラーが出て使えないとかで、
+  - flutter pub add がきなかったため自分で作りました
+  - 元ネタはこんな感じです
+    - https://codezine.jp/article/detail/116
+    - こちら Java Applet ですね
+    - いまも Applet 使っている人いるのだろうか
+  - ともかく Dart に雑に変換したものがこんな感じです
+    ![サンプル0](./3dexample/sample01.png)
+    ![サンプル1](./3dexample/sample02.png)
+    ![サンプル2](./3dexample/sample03.png)
+    ![サンプル2](./3dexample/sample04.png)
 
+  - [コードはこんな感じです](./3dexample/lib/src/MyGraph.dart)
+  - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/alert_web/index.html)
 
+  - グラフィック関連は見れば分かるかな？
 
+## pushudName で引数を付けて渡す
 
+- 使えそうなところはこんなところでしょうか
+  - こちらが呼び出し側です
 
+```dart
+  void pushNamed(BuildContext context, String callName, WidgetBuilder builder,
+      var someDynamicValue) {
+    route[callName] = builder;
+    Navigator.of(context).pushNamed(callName, arguments: someDynamicValue);
+  }
+```
 
+  - 呼び出される方はこんな感じで雑にいけます
+  - コールバックとかの実装に使いました
 
-
-
+```dart
+  @override
+  Widget build(BuildContext context) {
+    var x = ModalRoute.of(context)!.settings.arguments;
+    Widget me;
+    if (x is MyGraphCaller) {
+      me = CustomPaint(painter: _MyCustomPainter(x));
+    } else {
+      me = const Text('caller not found.');
+    }
+  ...
+```
 
 
