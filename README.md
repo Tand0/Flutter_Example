@@ -2577,7 +2577,7 @@ DateTime now = DateTime.now();
     ![サンプル2](./3dexample/sample04.png)
 
   - [コードはこんな感じです](./3dexample/lib/src/MyGraph.dart)
-  - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/alert_web/index.html)
+  - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/3dexample_web/index.html)
 
   - グラフィック関連は見れば分かるかな？
 
