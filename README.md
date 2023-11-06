@@ -85,6 +85,7 @@
   - [Python による最小二乗法の曲線を書く](#python-による最小二乗法の曲線を書く)
   - [Dart による最小二乗法の曲線を書く](#dart-による最小二乗法の曲線を書く)
   - [作ったものをwebで公開する](#作ったものをwebで公開する)
+- [FastAPI 上に flutter web で作成したファイル群を配置して配布する](#fastapi-上に-flutter-web-で作成したファイル群を配置して配布する)
 - [雑にグラフを書く](#雑にグラフを書く)
   - [雑にグラフを書くときに使ったワザとか](#雑にグラフを書くときに使ったワザとか)
     - [キャンバスの使い方](#キャンバスの使い方)
@@ -2129,6 +2130,67 @@ $ flutter build web --base-href /Flutter_Example/calc_web/
 ```
 
 
+# FastAPI 上に flutter web で作成したファイル群を配置して配布する
+
+- せっかく FastAPI と Flutter を連携させようというのだから
+  Flutter web を FastAPI 上に配置して連携できるようにしましょう
+
+- やろうとしていることはこんな感じです
+
+  ![ここでやろうとしていること](./pythonweb/image.png)
+
+- FastAPI 側はこんな感じで書きます
+  - この python スクリプトを動かして
+  - http://192.168.1.1:3001/web/ を読みに行くと
+  - スクリプトを動かした ./web 以下をwebページとして公開します
+
+```python
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+import uvicorn
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
+
+app.mount("/web", StaticFiles(directory="./web", html=True), name="web")
+
+
+def main():
+    uvicorn.run(__name__ + ":app", host="192.168.1.1", port=3001, reload=True)
+
+
+if __name__ == "__main__":
+
+    main()
+#
+```
+
+- ここに Flutter で作ったファイルを置けば良いわけです。
+  - Fultter のフォルダで以下を実行すると
+  -  ./build/web 配下に flutter ビルド用のファイルが作成されるので
+     このファイル群を 上記の ./web フォルダに置きます
+
+```shell
+$ flutter build web --base-href /web/
+```
+
+  -  するとこんな感じで Flutter と FastAPI が連携できます
+  -  あとは通信部分を作れば完璧でしょう
+
+![FastAPI と Flutter の真なる連携イメージ](./pythonweb/result.png)
+
+
+
+
 # 雑にグラフを書く
 
 - 雑にグラフを書きたくなって作りました
@@ -2412,13 +2474,15 @@ paintX.color = Color(cleanUpInt(valueNext));
 
 ## Class の情報を Json 化する
 
-- 実際にネットワークとは繋がりません
-- サーバとの接続は以前に FastAPI との接続の解説を書いたのでお仕事でやる人はそちらをみてください
+- 実際にネットワークとは繋がりませんが…
 - FastAPI とデータをやり取りするときはデータを Json にするのが便利です
 - でも Flutter 側でデータを Class で持っている場合はどうしたら良いでしょう？
 
 - そんなときには fromJson と toJson を使います
   - これだけで Class と Json の変換や逆変換ができます
+
+![fromJSON と toJSON](./img/fromJson.png)
+
 ```dart
 class Link {
   String componentIDA;
@@ -2437,6 +2501,8 @@ class Link {
   }
 }
 ```
+
+
 
 - データの中にリストとか入ってる場合は次のようにします
 
@@ -2625,4 +2691,3 @@ DateTime now = DateTime.now();
   ![サンプル11](./3dexample/sample11.png)
   ![サンプル12](./3dexample/sample12.png)
   ![サンプル12](./3dexample/sample13.png)
-
