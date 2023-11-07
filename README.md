@@ -79,6 +79,7 @@
     - [pubspec.yaml にhttp... を追加](#pubspecyaml-にhttp-を追加)
     - [参考：pubspec.yaml をもっと簡単に](#参考pubspecyaml-をもっと簡単に)
     - [http... を実装](#http-を実装)
+    - [FastAPI に curl 経由でJsonデータを POST する](#fastapi-に-curl-経由でjsonデータを-post-する)
   - [FastAPI を HTTPS で動かす](#fastapi-を-https-で動かす)
   - [Docker 化について](#docker-化について)
 - [グラフを書こう](#グラフを書こう)
@@ -115,6 +116,10 @@
 - [雑に 3Dグラフを作る](#雑に-3dグラフを作る)
   - [pushudName で引数を付けて渡す](#pushudname-で引数を付けて渡す)
   - [2D も一緒にやろう](#2d-も一緒にやろう)
+- [Flutter の画像まわり](#flutter-の画像まわり)
+  - [Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する](#widget-として-flutter-作成フォルダにあるファイル--いわゆるasset--から表示する)
+  - [Widget として web経由で表示する](#widget-として-web経由で表示する)
+  - [Canvas に画像を表示する](#canvas-に画像を表示する)
 
 
 
@@ -1948,6 +1953,52 @@ flutter pub add url_launcher
 
 - [こんな感じです](./openapi/dart_impl_raw/lib/main.dart)
 
+```dart
+              try {
+                Uri url = Uri.parse("http://192.168.1.1:3002");
+                var response = await http.get(url, headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'text/plain',
+                });
+                print(response.body);
+                //
+                url = Uri.parse("http://192.168.1.1:3002/token");
+                response = await http.post(url,
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'Accept': 'text/plain',
+                      // 'Authorization': 'Bearer $token',
+                    },
+                    body:
+                        "grant_type=&username=root&password=root&scope=&client_id=&client_secret=");
+                Map<String, dynamic> responceBody = json.decode(response.body);
+                String accessToken = responceBody["access_token"];
+                //
+                print(accessToken);
+              } catch (e) {
+                debugPrint("error");
+                print(e);
+              }
+```
+
+### FastAPI に curl 経由でJsonデータを POST する
+
+- Flutter を使わずに Ansible-playbook でJson データをサーバに叩き込むときの備忘録です
+
+- 元ネタ：  https://qiita.com/hash/items/eb7bb707b36852bdfb95
+  - まずは標準入力でテキストを渡す仕組みです
+  - "@-" で標準入力の意味になります
+  - "-X" でPOSTが指定できます
+```shell
+$ なんかの処理 | curl http://hoge.com -X POST -d @-
+```
+
+- 元ネタ： https://log.noid11.com/posts/how-to-curl-with-json/
+  - 次に渡すパラメータの Content-Type を決めましょう
+  - "-H" で指定できます
+```shell
+curl --data @- -H "Content-Type: application/json" -X POST http://hoge.com
+```
 
 
 ## FastAPI を HTTPS で動かす
@@ -2691,3 +2742,45 @@ DateTime now = DateTime.now();
   ![サンプル11](./3dexample/sample11.png)
   ![サンプル12](./3dexample/sample12.png)
   ![サンプル12](./3dexample/sample13.png)
+
+# Flutter の画像まわり
+
+- Flutter に画像を表示しましょう
+
+![Flutter に画像を表示しましょう](./graphic/imave_view/sample.png)
+
+## Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する
+
+
+- [こんな感じです](./graphic/imave_view/lib/src/my_image_asset.dart)
+
+```dart
+    return Image.asset('images/1girl.png');
+```
+
+## Widget として web経由で表示する
+
+- [こんな感じです](./graphic/imave_view/lib/src/my_image_web.dart)
+
+```dart
+    return Image.network(
+        'https://raw.githubusercontent.com/Tand0/NovelAI_input_support_android/main/src/main/res/raw/solo.png');
+```
+
+## Canvas に画像を表示する
+- [こんな感じです](./graphic/imave_view/lib/src/my_image_canvas_asset.dart)
+ - ――で、_loadImage() を呼び出すときに FutureBuilder() を使うのですが
+ - 説明が難しいのでコードを見てください
+
+```dart
+  Future<ui.Image> _loadImage(String imageAssetPath) async {
+    final ByteData data = await rootBundle.load(imageAssetPath);
+    final codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: 512,
+      targetHeight: 760,
+    );
+    var frame = await codec.getNextFrame();
+    return frame.image;
+  }
+```
