@@ -116,6 +116,7 @@
 - [雑に 3Dグラフを作る](#雑に-3dグラフを作る)
   - [pushudName で引数を付けて渡す](#pushudname-で引数を付けて渡す)
   - [2D も一緒にやろう](#2d-も一緒にやろう)
+  - [みんな大好きラムダ式](#みんな大好きラムダ式)
 - [Flutter の画像まわり](#flutter-の画像まわり)
   - [Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する](#widget-として-flutter-作成フォルダにあるファイル--いわゆるasset--から表示する)
   - [Widget として web経由で表示する](#widget-として-web経由で表示する)
@@ -2703,7 +2704,7 @@ DateTime now = DateTime.now();
   - [コードはこんな感じです](./3dexample/lib/src/my_graph_3d.dart)
   - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/3dexample_web/index.html)
 
-  - グラフィック関連は見れば分かるかな？
+
 
 ## pushudName で引数を付けて渡す
 
@@ -2743,11 +2744,67 @@ DateTime now = DateTime.now();
   ![サンプル12](./3dexample/sample12.png)
   ![サンプル12](./3dexample/sample13.png)
 
+
+## みんな大好きラムダ式
+  - グラフィック関連は見れば分かるので省略して、
+  - ここでは関数を渡ししているところの説明をします。
+    - たとえば y=x というグラフがあるとして、それをいちいち一つのクラスにしていたら切りがありません。
+    - そこで、関数を切り出して後から突っ込めれるようにします
+    - たとえば[以下の例では](./3dexample/lib/src/my_select.dart) を簡単に記述できます
+      - "2d x=y" というタイトル名
+      - x は -10 から 10の範囲で表示
+      - y は -10 から 10の範囲で表示
+      - グラフは (x) => x つまり y=x を表示
+    - このような呼び出し方は「みんな大好きラムダ式」などと私は呼んでいます。
+```dart
+MyGraphCaller2D("2d x=y", -10, 10, -10, 10, [(x) => x]);
+```
+ - この [MyGraphCaller2D 側](./3dexample/lib/src/my_graph_caller.dart) はこのような感じです
+   - ここで typedef から始まる Function の書き方がポイントでこれで関数渡しができます
+
+```dart
+typedef Caller2D = double Function(double);
+
+class MyGraphCaller2D extends MyGraphCaller {
+  List<Caller2D> caller2dList;
+  MyGraphCaller2D(super.title, super.xMin, super.xMax, super.yMin, super.yMax,
+      this.caller2dList);
+}
+```
+
+ - この [関数渡しを受ける側は](./3dexample/lib/src/my_graph_2d.dart) はこのような感じです
+```dart
+    for (Caller2D caller2D in myGraphCaller.caller2dList) {
+      // ...
+      // ...
+      for (int boxX = boxXMin.toInt() + 1; boxX < boxXMax; boxX++) {
+        // ...
+        // ...
+        double realY = caller2D(realX);
+        // ...
+        // ...
+      }
+```
+   - ……。上記の例だとラムダ式を List<Caller2D> で囲んでわかりにくいので
+   - 3D 側の例を出します
+     - このような呼び方はコールバックなどと呼ばれています。
+     - 一度慣れてしまうと元の書き方には戻れないハマりやすい書き方です
+
+```dart
+class _MyCustomPainter extends CustomPainter {
+  final MyGraphCaller3D myGraphCaller;
+  _MyCustomPainter(this.myGraphCaller);
+    // ...
+    // ...
+    z = myGraphCaller.caller3d(x, y);
+```
+
 # Flutter の画像まわり
 
 - Flutter に画像を表示しましょう
 
 ![Flutter に画像を表示しましょう](./graphic/imave_view/sample.png)
+
 
 ## Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する
 

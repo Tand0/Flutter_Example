@@ -149,22 +149,22 @@ class _MyCustomPainter extends CustomPainter {
     paintX.strokeWidth = 1.0;
     paintX.style = PaintingStyle.stroke;
     //
-    List<List<double>> realYList = [];
-    for (int boxX = boxXMin.toInt(); boxX < boxXMax; boxX++) {
-      double realX = getBoxXToRealX(boxX.toDouble());
-      List<double> oneCall = myGraphCaller.call(realX);
-      realYList.add(oneCall);
-    }
-    for (int i = 0; i < realYList[0].length; i++) {
+    int i = 0;
+    for (Caller2D caller2D in myGraphCaller.caller2dList) {
       paintX.color = colorList[i % colorList.length];
-      double boxY = getRealYToBoxY(realYList[0][i]);
-      Offset oe = Offset(boxXMin, boxY);
-      for (int j = 1; j < realYList.length; j++) {
-        Offset os = oe;
-        boxY = getRealYToBoxY(realYList[j][i]);
-        oe = Offset(boxXMin + j, boxY);
-        canvas.drawLine(os, oe, paintX);
+      double realX = getBoxXToRealX(boxXMin);
+      double realY = caller2D(realX);
+      double boxY = getRealYToBoxY(realY);
+      Offset offsetEnd = Offset(boxXMin, boxY);
+      for (int boxX = boxXMin.toInt() + 1; boxX < boxXMax; boxX++) {
+        Offset offsetStart = offsetEnd;
+        double realX = getBoxXToRealX(boxX.toDouble());
+        double realY = caller2D(realX);
+        double boxY = getRealYToBoxY(realY);
+        offsetEnd = Offset(boxX.toDouble(), boxY);
+        canvas.drawLine(offsetStart, offsetEnd, paintX);
       }
+      i++;
     }
   }
 }

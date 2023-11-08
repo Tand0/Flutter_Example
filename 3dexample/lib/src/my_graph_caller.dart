@@ -1,55 +1,28 @@
 ///
 ///
 abstract class MyGraphCaller {
-  String _title = "3D sample";
-  double _xMin = 0;
-  double _yMin = 0;
-  double _xMax = 100;
-  double _yMax = 100;
-
-  get title => _title;
-  set title(x) {
-    _title = x;
-  }
-
-  get xMin => _xMin;
-  set xMin(x) {
-    _xMin = x;
-  }
-
-  get yMin => _yMin;
-  set yMin(a) {
-    _yMin = a;
-  }
-
-  get xMax => _xMax;
-  set xMax(a) {
-    _xMax = a;
-  }
-
-  get yMax => _yMax;
-  set yMax(a) {
-    _yMax = a;
-  }
+  String title;
+  double xMin;
+  double yMin;
+  double xMax;
+  double yMax;
+  MyGraphCaller(this.title, this.xMin, this.xMax, this.yMin, this.yMax);
 }
 
-abstract class MyGraphCaller2D extends MyGraphCaller {
-  List<double> call(double x);
+typedef Caller2D = double Function(double);
+
+class MyGraphCaller2D extends MyGraphCaller {
+  List<Caller2D> caller2dList;
+  MyGraphCaller2D(super.title, super.xMin, super.xMax, super.yMin, super.yMax,
+      this.caller2dList);
 }
 
-abstract class MyGraphCaller3D extends MyGraphCaller {
-  double _zMin = 0;
-  double _zMax = 100;
+typedef Caller3D = double Function(double, double);
 
-  get zMin => _zMin;
-  set zMin(a) {
-    _zMin = a;
-  }
-
-  get zMax => _zMax;
-  set zMax(a) {
-    _zMax = a;
-  }
-
-  double call(double x, double y);
+class MyGraphCaller3D extends MyGraphCaller {
+  double zMin;
+  double zMax;
+  Caller3D caller3d;
+  MyGraphCaller3D(super.title, super.xMin, super.xMax, super.yMin, super.yMax,
+      this.zMin, this.zMax, this.caller3d);
 }

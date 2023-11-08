@@ -207,7 +207,7 @@ class _MyCustomPainter extends CustomPainter {
     double z;
     //
     // (1)
-    z = myGraphCaller.call(x, y);
+    z = myGraphCaller.caller3d(x, y);
 
     // (2)
     //z = 80;
