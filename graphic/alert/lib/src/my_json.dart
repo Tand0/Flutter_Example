@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'RootData.dart';
+import 'node_data.dart';
 
 class MyException implements IOException {
   String cause;
@@ -11,7 +11,7 @@ class MyException implements IOException {
 }
 
 class MyJson extends StatefulWidget {
-  const MyJson({Key? key}) : super(key: key);
+  const MyJson({super.key});
 
   static const String callName = "/Json";
   @override
@@ -22,31 +22,24 @@ class MyJson extends StatefulWidget {
 class _MyJson extends State<MyJson> {
   final myController = TextEditingController();
 
-  void save(BuildContext context, RootData rootData) {
+  void save(BuildContext context, NodeData nodeData) {
     String text = myController.text;
     final object = json.decode(text);
-    if ((object == null) || (object is! Map)) {
-      return;
-    }
-    rootData.lists.clear();
-    object.forEach((key, value) {
-      rootData.lists[key] = value;
-    });
-    rootData.updateRouteValue();
+    nodeData.save(object);
   }
 
-  void load(BuildContext context, RootData rootData) {
+  void load(BuildContext context, NodeData nodeData) {
     setState(() {
       myController.text =
-          const JsonEncoder.withIndent('    ').convert(rootData.lists);
+          const JsonEncoder.withIndent('    ').convert(nodeData.load());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final RootData rootData = Provider.of<RootData>(context, listen: true);
+    final NodeData nodeData = Provider.of<NodeData>(context, listen: true);
     //
-    load(context, rootData);
+    load(context, nodeData);
     //
     return Scaffold(
         appBar: AppBar(
@@ -71,9 +64,9 @@ class _MyJson extends State<MyJson> {
             selectedIndex: null,
             onDestinationSelected: (index) {
               if (index == 0) {
-                save(context, rootData);
+                save(context, nodeData);
               } else {
-                load(context, rootData);
+                load(context, nodeData);
               }
             },
           ),

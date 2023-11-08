@@ -880,11 +880,11 @@ class MyApp extends StatelessWidget {
 
 - これを以下のファイルに分割します
   - [./lib/main.dart](./separate/lib/main.dart) -- もともとのファイル
-  - [./lib/src/MyApp.dart](./separate/lib/src/MyApp.dart) -- 新しく作った MyApp のファイル
+  - [./lib/src/MyApp.dart](./separate/lib/src/my_app.dart) -- 新しく作った MyApp のファイル
 
-- これをするときは main.dart から MyApp.dart を呼ぶために import が必要になります
+- これをするときは main.dart から my_app.dart を呼ぶために import が必要になります
 ```dart
-import 'src/MyApp.dart';
+import 'src/my_app.dart';
 ```
 
 - これでいくつでもファイルを分割できるようになりました
@@ -923,8 +923,8 @@ class RootData with ChangeNotifier {
 ```dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'src/MyApp.dart';
-import 'src/RootData.dart';
+import 'src/my_app.dart';
+import 'src/root_data.dart';
 
 void main() {
   RootData data = RootData();
@@ -940,7 +940,7 @@ void main() {
 ```dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'RootData.dart';
+import 'root_data.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -2263,7 +2263,7 @@ $ flutter build web --base-href /web/
 ### キャンバスの使い方
 
 - 画面上でお絵描きする場合につかいます
-  - [ソースコードはこのあたりです](./graphic/graphic_client/lib/src/MyGraph.dart)
+  - [ソースコードはこのあたりです](./graphic/graphic_client/lib/src/my_graph.dart)
 ```dart
 CustomPaint(painter: _MyCustomPainter(value)))
 ```
@@ -2700,7 +2700,7 @@ DateTime now = DateTime.now();
     ![サンプル2](./3dexample/sample04.png)
     ![サンプル2](./3dexample/sample05.png)
 
-  - [コードはこんな感じです](./3dexample/lib/src/MyGraph3D.dart)
+  - [コードはこんな感じです](./3dexample/lib/src/my_graph_3d.dart)
   - [こんな感じでうごきます](https://tand0.github.io/Flutter_Example/3dexample_web/index.html)
 
   - グラフィック関連は見れば分かるかな？

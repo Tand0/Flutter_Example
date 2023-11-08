@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'MyGraphCaller.dart';
+import 'my_graph_caller.dart';
 
 class MyGraph2D extends StatelessWidget {
   const MyGraph2D({Key? key}) : super(key: key);

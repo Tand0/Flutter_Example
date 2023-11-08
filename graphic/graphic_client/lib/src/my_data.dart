@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'RootData.dart';
-import 'MyGraph.dart';
+import 'root_data.dart';
+import 'my_graph.dart';
 
 class MyData extends StatefulWidget {
   const MyData({Key? key}) : super(key: key);

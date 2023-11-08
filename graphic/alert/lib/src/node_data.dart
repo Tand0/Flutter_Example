@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'MySelect.dart';
+import 'my_select.dart';
 
 class NodeData with ChangeNotifier {
   @override

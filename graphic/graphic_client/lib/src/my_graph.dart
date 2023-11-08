@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'RootData.dart';
-import 'MyData.dart';
+import 'root_data.dart';
+import 'my_data.dart';
 import 'dart:convert';
 import 'dart:math';
 

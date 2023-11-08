@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'MyGraphCaller.dart';
+import 'my_graph_caller.dart';
 
 class MyGraph3D extends StatelessWidget {
   const MyGraph3D({Key? key}) : super(key: key);

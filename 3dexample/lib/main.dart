@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'src/MySelect.dart';
-import 'src/RootData.dart';
+import 'src/my_select.dart';
+import 'src/root_data.dart';
 
 void main() {
   RootData data = RootData();

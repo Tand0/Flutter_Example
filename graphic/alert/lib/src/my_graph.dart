@@ -1,7 +1,7 @@
-import 'package:alert/src/MyComponent.dart';
+import 'package:alert/src/my_component.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'NodeData.dart';
+import 'node_data.dart';
 
 class MyGraph extends StatefulWidget {
   static const String callName = "/Grap";

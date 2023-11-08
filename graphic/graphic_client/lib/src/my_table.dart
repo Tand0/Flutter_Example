@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:table/src/MyGraph.dart';
-import 'RootData.dart';
-import 'MySave.dart';
-import 'MyData.dart';
-import 'MyJson.dart';
+import 'package:table/src/my_graph.dart';
+import 'root_data.dart';
+import 'my_save.dart';
+import 'my_data.dart';
+import 'my_json.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 

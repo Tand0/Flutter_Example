@@ -1,10 +1,10 @@
-import 'package:alert/src/MyGraph.dart';
+import 'package:alert/src/my_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'NodeData.dart';
-import 'MyJson.dart';
-import 'MyAlarm.dart';
+import 'node_data.dart';
+import 'my_json.dart';
+import 'my_alarm.dart';
 
 class MySelect extends StatelessWidget {
   const MySelect({super.key});

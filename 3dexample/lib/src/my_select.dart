@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'MyGraphCaller.dart';
-import 'MyGraph3D.dart';
-import 'MyGraph2D.dart';
-import 'RootData.dart';
+import 'my_graph_caller.dart';
+import 'my_graph_3d.dart';
+import 'my_graph_2d.dart';
+import 'root_data.dart';
 import 'dart:math' as math;
 
 class MyGraphCallerFlat extends MyGraphCaller3D {

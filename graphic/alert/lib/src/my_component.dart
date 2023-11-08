@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'NodeData.dart';
+import 'node_data.dart';
 
 class MyComponent extends StatefulWidget {
   const MyComponent({super.key});
