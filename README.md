@@ -2753,10 +2753,20 @@ DateTime now = DateTime.now();
 
 
 - [こんな感じです](./graphic/imave_view/lib/src/my_image_asset.dart)
-
 ```dart
     return Image.asset('images/1girl.png');
 ```
+
+- ただし ファイルを使うときは [pubspec.yml](./graphic/imave_view/pubspec.yaml) に assets を登録しないといけません
+- 以下の例では ./images 配下を全て assets としてする書き方です
+- ファイル単体指定も可能です
+
+```yaml
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - images/
+```
+
 
 ## Widget として web経由で表示する
 
@@ -2768,19 +2778,60 @@ DateTime now = DateTime.now();
 ```
 
 ## Canvas に画像を表示する
-- [こんな感じです](./graphic/imave_view/lib/src/my_image_canvas_asset.dart)
- - ――で、_loadImage() を呼び出すときに FutureBuilder() を使うのですが
- - 説明が難しいのでコードを見てください
-
+- [こんな感じです](./graphic/imave_view/lib/src/my_image_canvas.dart)
+ - 上の例が asset を使う例で、下の例が web経由を使う例です
+ - これらのデータが集まったら MyImages というクラスに集約して返します
 ```dart
-  Future<ui.Image> _loadImage(String imageAssetPath) async {
-    final ByteData data = await rootBundle.load(imageAssetPath);
-    final codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(),
-      targetWidth: 512,
-      targetHeight: 760,
-    );
-    var frame = await codec.getNextFrame();
-    return frame.image;
+  Future<MyImages> _loadImage(
+      String imageAssetPath, String imageWebPath) async {
+    //
+    final ByteData dataAsset = await rootBundle.load(imageAssetPath);
+    Uint8List uint8ListAsset = dataAsset.buffer.asUint8List();
+    final codecAsset = await ui.instantiateImageCodec(uint8ListAsset);
+    var frameAsset = await codecAsset.getNextFrame();
+    //
+    //
+    //
+    Uri uriWeb = Uri.parse(imageWebPath);
+    Uint8List uint8ListWeb = await http.readBytes(uriWeb);
+    final codecWeb = await ui.instantiateImageCodec(uint8ListWeb);
+    var frameWeb = await codecWeb.getNextFrame();
+    //
+    MyImages myImages = MyImages(frameAsset.image, frameWeb.image);
+    //
+    return myImages;
   }
 ```
+- このメソッドを呼ぶときには FutureBuilder を使います
+- 以下の例では _loadImage の戻り値に応じて処理を変えています
+  - 待ち合せる
+  - エラーを返す
+  - MyImagePainterに値を渡す
+- 他の使い方としては認証とかするときの abstract class として重宝するでしょう
+
+```dart
+        body: FutureBuilder<MyImages>(
+            future: _loadImage("images/1girl.png",
+                "https://raw.githubusercontent.com/Tand0/Flutter_Example/main/graphic/imave_view/images/1girl.png"),
+            builder: (BuildContext context, AsyncSnapshot<MyImages> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return const Text('Image loading...');
+                default:
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Center(
+                      child: CustomPaint(
+                        painter: MyImagePainter(snapshot.data!),
+                        child: const SizedBox(
+                          width: 512,
+                          height: 760,
+                        ),
+                      ),
+                    );
+                  }
+              }
+            }));
+```
+

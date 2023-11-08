@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
+import 'package:http/http.dart' as http;
 import 'dart:ui' as ui;
 import 'dart:async';
 import 'root_data.dart';
@@ -11,16 +12,31 @@ class MyImageCanvasAsset extends StatefulWidget {
   createState() => _MyImageCanvasAsset();
 }
 
+class MyImages {
+  ui.Image forAsset;
+  ui.Image forWeb;
+  MyImages(this.forAsset, this.forWeb);
+}
+
 class _MyImageCanvasAsset extends State<MyImageCanvasAsset> {
-  Future<ui.Image> _loadImage(String imageAssetPath) async {
-    final ByteData data = await rootBundle.load(imageAssetPath);
-    final codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(),
-      targetWidth: 512,
-      targetHeight: 760,
-    );
-    var frame = await codec.getNextFrame();
-    return frame.image;
+  Future<MyImages> _loadImage(
+      String imageAssetPath, String imageWebPath) async {
+    //
+    final ByteData dataAsset = await rootBundle.load(imageAssetPath);
+    Uint8List uint8ListAsset = dataAsset.buffer.asUint8List();
+    final codecAsset = await ui.instantiateImageCodec(uint8ListAsset);
+    var frameAsset = await codecAsset.getNextFrame();
+    //
+    //
+    //
+    Uri uriWeb = Uri.parse(imageWebPath);
+    Uint8List uint8ListWeb = await http.readBytes(uriWeb);
+    final codecWeb = await ui.instantiateImageCodec(uint8ListWeb);
+    var frameWeb = await codecWeb.getNextFrame();
+    //
+    MyImages myImages = MyImages(frameAsset.image, frameWeb.image);
+    //
+    return myImages;
   }
 
   @override
@@ -37,9 +53,10 @@ class _MyImageCanvasAsset extends State<MyImageCanvasAsset> {
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back_ios),
             )),
-        body: FutureBuilder<ui.Image>(
-            future: _loadImage("images/1girl.png"),
-            builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+        body: FutureBuilder<MyImages>(
+            future: _loadImage("images/1girl.png",
+                "https://raw.githubusercontent.com/Tand0/Flutter_Example/main/graphic/imave_view/images/1girl.png"),
+            builder: (BuildContext context, AsyncSnapshot<MyImages> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return const Text('Image loading...');
@@ -67,12 +84,13 @@ class _MyImageCanvasAsset extends State<MyImageCanvasAsset> {
 }
 
 class MyImagePainter extends CustomPainter {
-  ui.Image? myImage;
+  MyImages? myImage;
   MyImagePainter(this.myImage);
   @override
   void paint(Canvas canvas, Size size) async {
     if (myImage != null) {
-      canvas.drawImage(myImage!, const Offset(0, 0), Paint());
+      canvas.drawImage(myImage!.forAsset, const Offset(0, 0), Paint());
+      canvas.drawImage(myImage!.forAsset, const Offset(100, 0), Paint());
     }
   }
 

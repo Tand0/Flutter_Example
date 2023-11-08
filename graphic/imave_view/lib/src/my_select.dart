@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'my_image_web.dart';
 import 'my_image_asset.dart';
-import 'my_image_canvas_asset.dart';
+import 'my_image_canvas.dart';
 import 'root_data.dart';
 
 class MySelect extends StatelessWidget {
