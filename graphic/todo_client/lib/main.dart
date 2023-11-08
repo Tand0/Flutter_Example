@@ -5,6 +5,7 @@ DateTime _focused = DateTime.now();
 DateTime? _selected = _focused;
 final Map<DateTime, List> sampleEvents = {};
 List<MenuItem> menuItemList = [];
+String userName = "bob";
 
 void main() {
   runApp(const MyApp());
@@ -86,7 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-typedef MenuAction = void Function();
+typedef MenuAction = void Function(
+    DateTime selectDateTime, List? event, MenuItem item);
 
 class MenuItem {
   String title;
@@ -94,9 +96,11 @@ class MenuItem {
   double xMin;
   double yMin;
   double yMax;
-  MenuAction? menuAction;
-  MenuItem(
-      this.title, this.xMin, this.xMax, this.yMin, this.yMax, this.menuAction);
+  DateTime selectDateTime;
+  List? event;
+  MenuAction menuAction;
+  MenuItem(this.title, this.xMin, this.xMax, this.yMin, this.yMax,
+      this.selectDateTime, this.event, this.menuAction);
 }
 
 class _MyCustomPainter extends CustomPainter {
@@ -106,6 +110,33 @@ class _MyCustomPainter extends CustomPainter {
   double pointY = 0;
   List<String>? menuList;
   _MyCustomPainter();
+
+  void cut(DateTime selectDateTime, List? event, MenuItem item) {
+    if (!sampleEvents.containsKey(selectDateTime)) {
+      return;
+    }
+    if (event == null) {
+      return;
+    }
+    copy(selectDateTime, event, item);
+    //
+    sampleEvents[selectDateTime]?.remove(event);
+  }
+
+  void copy(DateTime selectDateTime, List? event, MenuItem item) {
+    //TODO:
+  }
+  void past(DateTime selectDateTime, List? event, MenuItem item) {
+    List eventList = [];
+    if (sampleEvents.containsKey(selectDateTime)) {
+      eventList = sampleEvents[selectDateTime]!;
+    }
+    double dx = item.xMin;
+    double dy = item.yMin;
+    String copyText = "xxxx";
+    eventList.add([dx, dx + 1, dy, dy + 1, userName, copyText]);
+    sampleEvents[selectDateTime] = eventList;
+  }
 
   void setPoint(
       BuildContext context, DateTime? dateTime, double dx, double dy) {
@@ -118,24 +149,45 @@ class _MyCustomPainter extends CustomPainter {
 
     if (menuItemList.isNotEmpty) {
       //
+      for (MenuItem item in menuItemList) {
+        if ((item.xMin < dx) &&
+            (dx < item.xMax) &&
+            (item.yMin < dy) &&
+            (dy < item.yMax)) {
+          item.menuAction(item.selectDateTime, item.event, item);
+        }
+      }
       //
       //
       menuItemList = [];
     } else {
       DateTime selectDateTime =
           DateTime.utc(_selected!.year, _selected!.month, _selected!.day);
-      List eventList = [];
+      bool flag = true;
       if (sampleEvents.containsKey(selectDateTime)) {
-        eventList = sampleEvents[selectDateTime]!;
+        List eventList = sampleEvents[selectDateTime]!;
+        for (List event in eventList) {
+          if ((event[0] < dx) &&
+              (dx < event[1]) &&
+              (event[2] < dy) &&
+              (dy < event[3])) {
+            // hit!
+            menuItemList = [
+              MenuItem("Cut", dx, dx + 1, dy, dy + 1, selectDateTime, event,
+                  (p1, p2, p3) => cut(p1, p2, p3)),
+              MenuItem("Copy", dx, dx + 1, dy, dy + 1, selectDateTime, event,
+                  (p1, p2, p3) => copy(p1, p2, p3)),
+            ];
+            flag = false;
+          }
+        }
       }
-      eventList.add([dx, dx + 1, dy, dy + 1, "bob", "xxxx"]);
-      sampleEvents[selectDateTime] = eventList;
-      //
-      menuItemList = [
-        MenuItem("Cut", dx, dx + 1, dy, dy + 1, null),
-        MenuItem("Copy", dx, dx + 1, dy, dy + 1, null),
-        MenuItem("Paste", dx, dx + 1, dy, dy + 1, null),
-      ];
+      if (flag) {
+        menuItemList = [
+          MenuItem("Paste", dx, dx + 1, dy, dy + 1, selectDateTime, null,
+              (p1, p2, p3) => past(p1, null, p3)),
+        ];
+      }
     }
   }
 
@@ -214,6 +266,8 @@ class _MyCustomPainter extends CustomPainter {
       double dx = menuItemList[0].xMin;
       double dy = menuItemList[0].yMin;
 
+      List<TextPainter> textTitleList = [];
+      double maxWidth = 0;
       for (MenuItem menuItem in menuItemList) {
         TextPainter textTitle = TextPainter(
           textDirection: TextDirection.ltr,
@@ -222,9 +276,16 @@ class _MyCustomPainter extends CustomPainter {
             text: menuItem.title,
           ),
         )..layout();
+        textTitleList.add(textTitle);
+        maxWidth = maxWidth < textTitle.width ? textTitle.width : maxWidth;
+      }
+      int i = -1;
+      for (MenuItem menuItem in menuItemList) {
+        i++;
+        TextPainter textTitle = textTitleList[i];
         menuItem.xMin = dx;
         menuItem.yMin = dy;
-        menuItem.xMax = menuItem.xMin + 100;
+        menuItem.xMax = dx + maxWidth + 4;
         menuItem.yMax = menuItem.yMin + textTitle.height + 4;
         dx = menuItem.xMin;
         dy = menuItem.yMax + 1;
