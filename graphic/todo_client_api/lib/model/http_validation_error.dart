@@ -10,30 +10,36 @@
 
 part of openapi.api;
 
-class ValidationErrorLocInner {
-  /// Returns a new [ValidationErrorLocInner] instance.
-  ValidationErrorLocInner({
+class HTTPValidationError {
+  /// Returns a new [HTTPValidationError] instance.
+  HTTPValidationError({
+    this.detail = const [],
   });
 
+  List<ValidationError> detail;
+
   @override
-  bool operator ==(Object other) => identical(this, other) || other is ValidationErrorLocInner &&
+  bool operator ==(Object other) => identical(this, other) || other is HTTPValidationError &&
+    _deepEquality.equals(other.detail, detail);
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (detail.hashCode);
 
   @override
-  String toString() => 'ValidationErrorLocInner[]';
+  String toString() => 'HTTPValidationError[detail=$detail]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'detail'] = this.detail;
     return json;
   }
 
-  /// Returns a new [ValidationErrorLocInner] instance and imports its values from
+  /// Returns a new [HTTPValidationError] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static ValidationErrorLocInner? fromJson(dynamic value) {
+  static HTTPValidationError? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -42,23 +48,24 @@ class ValidationErrorLocInner {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "ValidationErrorLocInner[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "ValidationErrorLocInner[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "HTTPValidationError[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "HTTPValidationError[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return ValidationErrorLocInner(
+      return HTTPValidationError(
+        detail: ValidationError.listFromJson(json[r'detail']),
       );
     }
     return null;
   }
 
-  static List<ValidationErrorLocInner> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <ValidationErrorLocInner>[];
+  static List<HTTPValidationError> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <HTTPValidationError>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = ValidationErrorLocInner.fromJson(row);
+        final value = HTTPValidationError.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -67,12 +74,12 @@ class ValidationErrorLocInner {
     return result.toList(growable: growable);
   }
 
-  static Map<String, ValidationErrorLocInner> mapFromJson(dynamic json) {
-    final map = <String, ValidationErrorLocInner>{};
+  static Map<String, HTTPValidationError> mapFromJson(dynamic json) {
+    final map = <String, HTTPValidationError>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = ValidationErrorLocInner.fromJson(entry.value);
+        final value = HTTPValidationError.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -81,14 +88,14 @@ class ValidationErrorLocInner {
     return map;
   }
 
-  // maps a json object with a list of ValidationErrorLocInner-objects as value to a dart map
-  static Map<String, List<ValidationErrorLocInner>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<ValidationErrorLocInner>>{};
+  // maps a json object with a list of HTTPValidationError-objects as value to a dart map
+  static Map<String, List<HTTPValidationError>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<HTTPValidationError>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = ValidationErrorLocInner.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = HTTPValidationError.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

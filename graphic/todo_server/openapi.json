@@ -23,15 +23,18 @@
         }
       }
     },
-    "/token": {
+    "/api/token": {
       "post": {
+        "tags": [
+          "api"
+        ],
         "summary": "Login For Access Token",
-        "operationId": "login_for_access_token_token_post",
+        "operationId": "login_for_access_token_api_token_post",
         "requestBody": {
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/Body_login_for_access_token_token_post"
+                "$ref": "#/components/schemas/Body_login_for_access_token_api_token_post"
               }
             }
           },
@@ -61,29 +64,13 @@
         }
       }
     },
-    "/items": {
+    "/api/user": {
       "get": {
-        "summary": "Get Item",
-        "operationId": "get_item_items_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
-      },
-      "post": {
-        "summary": "Post Item",
-        "operationId": "post_item_items_post",
+        "tags": [
+          "api"
+        ],
+        "summary": "Get Web User",
+        "operationId": "get_web_user_api_user_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -101,52 +88,13 @@
         ]
       }
     },
-    "/items/{item_id}": {
-      "get": {
-        "summary": "Get Items",
-        "operationId": "get_items_items__item_id__get",
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "item_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Item Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Item"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/user/{username}": {
       "post": {
-        "summary": "Post Items",
-        "operationId": "post_items_items__item_id__post",
+        "tags": [
+          "api"
+        ],
+        "summary": "Post Web User",
+        "operationId": "post_web_user_api_user__username__post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -154,75 +102,30 @@
         ],
         "parameters": [
           {
-            "name": "item_id",
+            "name": "username",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Item Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Item"
-                }
-              }
+              "title": "Username"
             }
           },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Put Item",
-        "operationId": "put_item_items__item_id__put",
-        "security": [
           {
-            "OAuth2PasswordBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "item_id",
-            "in": "path",
+            "name": "passwd",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Item Id"
+              "title": "Passwd"
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Item"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Item"
-                }
+                "schema": {}
               }
             }
           },
@@ -239,8 +142,11 @@
         }
       },
       "delete": {
-        "summary": "Delete Item",
-        "operationId": "delete_item_items__item_id__delete",
+        "tags": [
+          "api"
+        ],
+        "summary": "Delete Web User",
+        "operationId": "delete_web_user_api_user__username__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -248,12 +154,259 @@
         ],
         "parameters": [
           {
-            "name": "item_id",
+            "name": "username",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Item Id"
+              "title": "Username"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/items/All": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get Items",
+        "operationId": "get_items_api_items_All_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/items/All/{yyyy}/{mm}": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get Items All",
+        "operationId": "get_items_all_api_items_All__yyyy___mm__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "yyyy",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Yyyy"
+            }
+          },
+          {
+            "name": "mm",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Mm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/items/{yyyy}/{mm}": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get Items User",
+        "operationId": "get_items_user_api_items__yyyy___mm__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "yyyy",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Yyyy"
+            }
+          },
+          {
+            "name": "mm",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Mm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Post Items User",
+        "operationId": "post_items_user_api_items__yyyy___mm__post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "yyyy",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Yyyy"
+            }
+          },
+          {
+            "name": "mm",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Mm"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Delete Items User",
+        "operationId": "delete_items_user_api_items__yyyy___mm__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "yyyy",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Yyyy"
+            }
+          },
+          {
+            "name": "mm",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Mm"
             }
           }
         ],
@@ -282,7 +435,7 @@
   },
   "components": {
     "schemas": {
-      "Body_login_for_access_token_token_post": {
+      "Body_login_for_access_token_api_token_post": {
         "properties": {
           "grant_type": {
             "anyOf": [
@@ -337,7 +490,7 @@
           "username",
           "password"
         ],
-        "title": "Body_login_for_access_token_token_post"
+        "title": "Body_login_for_access_token_api_token_post"
       },
       "HTTPValidationError": {
         "properties": {
@@ -351,24 +504,6 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
-      },
-      "Item": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name"
-        ],
-        "title": "Item"
       },
       "Token": {
         "properties": {

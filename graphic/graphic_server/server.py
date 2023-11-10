@@ -4,6 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 import json
 import os
+from fastapi.staticfiles import StaticFiles
+
 
 app = FastAPI()
 TEXT_NAME = "./data.json"
@@ -38,7 +40,16 @@ def post_item(item: dict):
     return item
 
 
+app.mount("/web", StaticFiles(directory="./web", html=True), name="web")
+
+
 def main():
+    host = "192.168.1.1"
+    port = 3001
+    url_json = "{\"url\": \"http://" + host + ":" + str(port) + "\"}"
+    with open("./web/assets/ip.json", 'w') as f:
+        f.write(url_json)
+    #
     uvicorn.run(__name__ + ":app", host="192.168.1.1", port=3001, reload=True)
 
 

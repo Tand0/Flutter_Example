@@ -87,6 +87,7 @@
   - [Dart による最小二乗法の曲線を書く](#dart-による最小二乗法の曲線を書く)
   - [作ったものをwebで公開する](#作ったものをwebで公開する)
 - [FastAPI 上に flutter web で作成したファイル群を配置して配布する](#fastapi-上に-flutter-web-で作成したファイル群を配置して配布する)
+  - [通信部分を作る](#通信部分を作る)
 - [雑にグラフを書く](#雑にグラフを書く)
   - [雑にグラフを書くときに使ったワザとか](#雑にグラフを書くときに使ったワザとか)
     - [キャンバスの使い方](#キャンバスの使い方)
@@ -121,6 +122,9 @@
   - [Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する](#widget-として-flutter-作成フォルダにあるファイル--いわゆるasset--から表示する)
   - [Widget として web経由で表示する](#widget-として-web経由で表示する)
   - [Canvas に画像を表示する](#canvas-に画像を表示する)
+- [さらにこまごましたもの特集 -- 後でタイトル変更予定](#さらにこまごましたもの特集----後でタイトル変更予定)
+  - [Flutter アプリの国際化](#flutter-アプリの国際化)
+  - [クリップボードの取得と設定](#クリップボードの取得と設定)
 
 
 
@@ -1820,6 +1824,9 @@ with ApiClient(configuration) as api_client:
 ###  openapi-generator で生成したクライアントコード呼び出し(Dart/Flutter 編)
 - まずは環境構築
 
+
+- [実際に呼んでみたソースコード](./openapi/dart_impl/lib/main.dart)
+- 
 ```shell
 $ flutter create --template=app --platforms web --org github.com --project-name dart_impl -i swift -a java --description "OpenAPI call sample" dart_impl
 ```
@@ -1831,10 +1838,14 @@ dependencies:
     path: ../dart
 ```
 
+- ――で、実際やってみるとバグ報告がでていますね…… 2023/11/10 時点
+  - https://github.com/OpenAPITools/openapi-generator/issues/13302
+
+
+
 ### CORS(クロスオリジンリソース共有)ポリシー 対策
 
 - dart/flutter 版が次のエラーでうまく動かなかったので対策する
-  - https://github.com/OpenAPITools/openapi-generator/issues/13302
   - Flutter 側で XMLHttpRequest error が出る
 
 - 要は CORS(クロスオリジンリソース共有)ポリシーという問題を解決する
@@ -2240,6 +2251,77 @@ $ flutter build web --base-href /web/
 
 ![FastAPI と Flutter の真なる連携イメージ](./pythonweb/result.png)
 
+## 通信部分を作る
+
+- はい。それでは通信部分を作っていきましょう
+- FastAPI を使って RestAPI で通信するのは分かるのですが、問題は Flutter が FastAPI の IPアドレスと Layer4 port をどうやって知るかです
+
+![FastAPI と Flutter と通信する場合の問題点](./pythonweb/image2.png)
+
+- ここでは assets フォルダを作成して ip アドレス等が入ったファイルを置き、
+- FastAPI が起動したらその部分を書き換え Flutter 側でそのアドレスで呼び出すことを考えましょう
+
+- まずは assets とて設定ファイルを置く ./assets/ip.json を作ります
+
+```json
+{"url":"192.168.1.1"}
+```
+
+- まずは assets として使えるように pubspec.yaml を修正します
+
+```yaml
+assets:
+  - asstes/ip.json
+```
+
+- クライアント側で初期化時にURLを読み込ませます
+
+```dart
+  static Future<Map?> getUrl() async {
+    String loadIP = await rootBundle.loadString('./ip.json');
+    ipAdressData = json.decode(loadIP);
+    print(ipAdressData);
+    print(loadIP);
+    return ipAdressData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      await getUrl();
+      setState(() {});
+    });
+  }
+```
+
+- build してサーバ側の ./web フォルダに ./build/web をコピーしていれます
+
+```shell
+$ flutter build web --base-href /web/
+```
+
+- サーバ側のコードに以下を追記します
+
+```python
+from fastapi.staticfiles import StaticFiles
+#
+#
+#
+app.mount("/web", StaticFiles(directory="./web", html=True), name="web")
+
+
+def main():
+    host = "192.168.1.1"
+    port = 3001
+    url_json = "{\"url\": \"http://" + host + ":" + str(port) + "\"}"
+    with open("./web/assets/ip.json", 'w') as f:
+        f.write(url_json)
+    #
+    uvicorn.run(__name__ + ":app", host="192.168.1.1", port=3001, reload=True)
+```
+
+- 呼ばれることを確認して完了です
 
 
 
@@ -2891,4 +2973,54 @@ class _MyCustomPainter extends CustomPainter {
               }
             }));
 ```
+
+
+# さらにこまごましたもの特集 -- 後でタイトル変更予定
+
+## Flutter アプリの国際化
+
+- ここを見てください
+  - https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization
+
+  - 以下を実行すると pubspec.yaml が更新されます
+
+```shell
+$ flutter pub add flutter_localizations --sdk=flutter
+$ flutter pub add intl:any
+```
+
+- つぎに MaterialApp に以下のように localizationsDelegates: と supportedLocales: を追加します
+
+```dart
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+// ...
+// ...
+// ...
+
+      child: MaterialApp(localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ], supportedLocales: const [
+        Locale("en"),
+        Locale("ja"),
+      ], initialRoute: MyLogin.callName, routes: data.route)));
+```
+
+
+- これで動きます。たぶん
+
+
+## クリップボードの取得と設定
+
+
+
+
+
+
+
+
+
+
 

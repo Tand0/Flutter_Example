@@ -42,13 +42,14 @@ import 'package:openapi/api.dart';
 // TODO Configure OAuth2 access token for authorization: OAuth2PasswordBearer
 //defaultApiClient.getAuthentication<OAuth>('OAuth2PasswordBearer').accessToken = 'YOUR_ACCESS_TOKEN';
 
-final api_instance = DefaultApi();
-final itemId = itemId_example; // String | 
+final api_instance = ApiApi();
+final yyyy = 56; // int | 
+final mm = 56; // int | 
 
 try {
-    api_instance.deleteItemItemsItemIdDelete(itemId);
+    api_instance.deleteItemsUserApiItemsYyyyMmDelete(yyyy, mm);
 } catch (e) {
-    print('Exception when calling DefaultApi->deleteItemItemsItemIdDelete: $e\n');
+    print('Exception when calling ApiApi->deleteItemsUserApiItemsYyyyMmDelete: $e\n');
 }
 
 ```
@@ -59,20 +60,21 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**deleteItemItemsItemIdDelete**](doc//DefaultApi.md#deleteitemitemsitemiddelete) | **DELETE** /items/{item_id} | Delete Item
-*DefaultApi* | [**getItemItemsGet**](doc//DefaultApi.md#getitemitemsget) | **GET** /items | Get Item
-*DefaultApi* | [**getItemsItemsItemIdGet**](doc//DefaultApi.md#getitemsitemsitemidget) | **GET** /items/{item_id} | Get Items
+*ApiApi* | [**deleteItemsUserApiItemsYyyyMmDelete**](doc//ApiApi.md#deleteitemsuserapiitemsyyyymmdelete) | **DELETE** /api/items/{yyyy}/{mm} | Delete Items User
+*ApiApi* | [**deleteWebUserApiUserUsernameDelete**](doc//ApiApi.md#deletewebuserapiuserusernamedelete) | **DELETE** /api/user/{username} | Delete Web User
+*ApiApi* | [**getItemsAllApiItemsAllYyyyMmGet**](doc//ApiApi.md#getitemsallapiitemsallyyyymmget) | **GET** /api/items/All/{yyyy}/{mm} | Get Items All
+*ApiApi* | [**getItemsApiItemsAllGet**](doc//ApiApi.md#getitemsapiitemsallget) | **GET** /api/items/All | Get Items
+*ApiApi* | [**getItemsUserApiItemsYyyyMmGet**](doc//ApiApi.md#getitemsuserapiitemsyyyymmget) | **GET** /api/items/{yyyy}/{mm} | Get Items User
+*ApiApi* | [**getWebUserApiUserGet**](doc//ApiApi.md#getwebuserapiuserget) | **GET** /api/user | Get Web User
+*ApiApi* | [**loginForAccessTokenApiTokenPost**](doc//ApiApi.md#loginforaccesstokenapitokenpost) | **POST** /api/token | Login For Access Token
+*ApiApi* | [**postItemsUserApiItemsYyyyMmPost**](doc//ApiApi.md#postitemsuserapiitemsyyyymmpost) | **POST** /api/items/{yyyy}/{mm} | Post Items User
+*ApiApi* | [**postWebUserApiUserUsernamePost**](doc//ApiApi.md#postwebuserapiuserusernamepost) | **POST** /api/user/{username} | Post Web User
 *DefaultApi* | [**getTopGet**](doc//DefaultApi.md#gettopget) | **GET** / | Get Top
-*DefaultApi* | [**loginForAccessTokenTokenPost**](doc//DefaultApi.md#loginforaccesstokentokenpost) | **POST** /token | Login For Access Token
-*DefaultApi* | [**postItemItemsPost**](doc//DefaultApi.md#postitemitemspost) | **POST** /items | Post Item
-*DefaultApi* | [**postItemsItemsItemIdPost**](doc//DefaultApi.md#postitemsitemsitemidpost) | **POST** /items/{item_id} | Post Items
-*DefaultApi* | [**putItemItemsItemIdPut**](doc//DefaultApi.md#putitemitemsitemidput) | **PUT** /items/{item_id} | Put Item
 
 
 ## Documentation For Models
 
  - [HTTPValidationError](doc//HTTPValidationError.md)
- - [Item](doc//Item.md)
  - [Token](doc//Token.md)
  - [ValidationError](doc//ValidationError.md)
 

@@ -10,30 +10,42 @@
 
 part of openapi.api;
 
-class ValidationErrorLocInner {
-  /// Returns a new [ValidationErrorLocInner] instance.
-  ValidationErrorLocInner({
+class Token {
+  /// Returns a new [Token] instance.
+  Token({
+    required this.accessToken,
+    required this.tokenType,
   });
 
+  String accessToken;
+
+  String tokenType;
+
   @override
-  bool operator ==(Object other) => identical(this, other) || other is ValidationErrorLocInner &&
+  bool operator ==(Object other) => identical(this, other) || other is Token &&
+    other.accessToken == accessToken &&
+    other.tokenType == tokenType;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (accessToken.hashCode) +
+    (tokenType.hashCode);
 
   @override
-  String toString() => 'ValidationErrorLocInner[]';
+  String toString() => 'Token[accessToken=$accessToken, tokenType=$tokenType]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'access_token'] = this.accessToken;
+      json[r'token_type'] = this.tokenType;
     return json;
   }
 
-  /// Returns a new [ValidationErrorLocInner] instance and imports its values from
+  /// Returns a new [Token] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static ValidationErrorLocInner? fromJson(dynamic value) {
+  static Token? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -42,23 +54,25 @@ class ValidationErrorLocInner {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "ValidationErrorLocInner[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "ValidationErrorLocInner[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "Token[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "Token[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return ValidationErrorLocInner(
+      return Token(
+        accessToken: mapValueOfType<String>(json, r'access_token')!,
+        tokenType: mapValueOfType<String>(json, r'token_type')!,
       );
     }
     return null;
   }
 
-  static List<ValidationErrorLocInner> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <ValidationErrorLocInner>[];
+  static List<Token> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <Token>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = ValidationErrorLocInner.fromJson(row);
+        final value = Token.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -67,12 +81,12 @@ class ValidationErrorLocInner {
     return result.toList(growable: growable);
   }
 
-  static Map<String, ValidationErrorLocInner> mapFromJson(dynamic json) {
-    final map = <String, ValidationErrorLocInner>{};
+  static Map<String, Token> mapFromJson(dynamic json) {
+    final map = <String, Token>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = ValidationErrorLocInner.fromJson(entry.value);
+        final value = Token.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -81,14 +95,14 @@ class ValidationErrorLocInner {
     return map;
   }
 
-  // maps a json object with a list of ValidationErrorLocInner-objects as value to a dart map
-  static Map<String, List<ValidationErrorLocInner>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<ValidationErrorLocInner>>{};
+  // maps a json object with a list of Token-objects as value to a dart map
+  static Map<String, List<Token>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<Token>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = ValidationErrorLocInner.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = Token.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -96,6 +110,8 @@ class ValidationErrorLocInner {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'access_token',
+    'token_type',
   };
 }
 

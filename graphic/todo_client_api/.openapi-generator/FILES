@@ -2,13 +2,14 @@
 .travis.yml
 README.md
 analysis_options.yaml
+doc/ApiApi.md
 doc/DefaultApi.md
 doc/HTTPValidationError.md
-doc/Item.md
 doc/Token.md
 doc/ValidationError.md
 git_push.sh
 lib/api.dart
+lib/api/api_api.dart
 lib/api/default_api.dart
 lib/api_client.dart
 lib/api_exception.dart
@@ -19,7 +20,6 @@ lib/auth/http_basic_auth.dart
 lib/auth/http_bearer_auth.dart
 lib/auth/oauth.dart
 lib/model/http_validation_error.dart
-lib/model/item.dart
 lib/model/token.dart
 lib/model/validation_error.dart
 pubspec.yaml

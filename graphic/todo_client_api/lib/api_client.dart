@@ -184,8 +184,6 @@ class ApiClient {
           return value is DateTime ? value : DateTime.tryParse(value);
         case 'HTTPValidationError':
           return HTTPValidationError.fromJson(value);
-        case 'Item':
-          return Item.fromJson(value);
         case 'Token':
           return Token.fromJson(value);
         case 'ValidationError':
