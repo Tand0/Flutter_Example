@@ -2264,7 +2264,7 @@ $ flutter build web --base-href /web/
 - まずは assets とて設定ファイルを置く ./assets/ip.json を作ります
 
 ```json
-{"url":"192.168.1.1"}
+{"url":"http://192.168.1.1:3001"}
 ```
 
 - まずは assets として使えるように pubspec.yaml を修正します
@@ -2280,8 +2280,6 @@ assets:
   static Future<Map?> getUrl() async {
     String loadIP = await rootBundle.loadString('./ip.json');
     ipAdressData = json.decode(loadIP);
-    print(ipAdressData);
-    print(loadIP);
     return ipAdressData;
   }
 
@@ -2302,6 +2300,7 @@ $ flutter build web --base-href /web/
 ```
 
 - サーバ側のコードに以下を追記します
+  - 一度 ip.json を作れば、変わることがないならそのままで良い気もしますが……
 
 ```python
 from fastapi.staticfiles import StaticFiles

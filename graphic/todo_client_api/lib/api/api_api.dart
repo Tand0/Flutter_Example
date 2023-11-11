@@ -10,7 +10,6 @@
 
 part of openapi.api;
 
-
 class ApiApi {
   ApiApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
@@ -25,11 +24,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<Response> deleteItemsUserApiItemsYyyyMmDeleteWithHttpInfo(int yyyy, int mm,) async {
+  Future<Response> deleteItemsUserApiItemsYyyyMmDeleteWithHttpInfo(
+    int yyyy,
+    int mm,
+  ) async {
     // ignore: prefer_const_declarations
     final path = r'/api/items/{yyyy}/{mm}'
-      .replaceAll('{yyyy}', yyyy.toString())
-      .replaceAll('{mm}', mm.toString());
+        .replaceAll('{yyyy}', yyyy.toString())
+        .replaceAll('{mm}', mm.toString());
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -39,7 +41,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -59,8 +60,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<void> deleteItemsUserApiItemsYyyyMmDelete(int yyyy, int mm,) async {
-    final response = await deleteItemsUserApiItemsYyyyMmDeleteWithHttpInfo(yyyy, mm,);
+  Future<void> deleteItemsUserApiItemsYyyyMmDelete(
+    int yyyy,
+    int mm,
+  ) async {
+    final response = await deleteItemsUserApiItemsYyyyMmDeleteWithHttpInfo(
+      yyyy,
+      mm,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -73,10 +80,11 @@ class ApiApi {
   /// Parameters:
   ///
   /// * [String] username (required):
-  Future<Response> deleteWebUserApiUserUsernameDeleteWithHttpInfo(String username,) async {
+  Future<Response> deleteWebUserApiUserUsernameDeleteWithHttpInfo(
+    String username,
+  ) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/user/{username}'
-      .replaceAll('{username}', username);
+    final path = r'/api/user/{username}'.replaceAll('{username}', username);
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -86,7 +94,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -104,8 +111,12 @@ class ApiApi {
   /// Parameters:
   ///
   /// * [String] username (required):
-  Future<void> deleteWebUserApiUserUsernameDelete(String username,) async {
-    final response = await deleteWebUserApiUserUsernameDeleteWithHttpInfo(username,);
+  Future<void> deleteWebUserApiUserUsernameDelete(
+    String username,
+  ) async {
+    final response = await deleteWebUserApiUserUsernameDeleteWithHttpInfo(
+      username,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -120,11 +131,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<Response> getItemsAllApiItemsAllYyyyMmGetWithHttpInfo(int yyyy, int mm,) async {
+  Future<Response> getItemsAllApiItemsAllYyyyMmGetWithHttpInfo(
+    int yyyy,
+    int mm,
+  ) async {
     // ignore: prefer_const_declarations
     final path = r'/api/items/All/{yyyy}/{mm}'
-      .replaceAll('{yyyy}', yyyy.toString())
-      .replaceAll('{mm}', mm.toString());
+        .replaceAll('{yyyy}', yyyy.toString())
+        .replaceAll('{mm}', mm.toString());
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -134,7 +148,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -154,8 +167,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<void> getItemsAllApiItemsAllYyyyMmGet(int yyyy, int mm,) async {
-    final response = await getItemsAllApiItemsAllYyyyMmGetWithHttpInfo(yyyy, mm,);
+  Future<void> getItemsAllApiItemsAllYyyyMmGet(
+    int yyyy,
+    int mm,
+  ) async {
+    final response = await getItemsAllApiItemsAllYyyyMmGetWithHttpInfo(
+      yyyy,
+      mm,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -176,7 +195,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -206,11 +224,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<Response> getItemsUserApiItemsYyyyMmGetWithHttpInfo(int yyyy, int mm,) async {
+  Future<Response> getItemsUserApiItemsYyyyMmGetWithHttpInfo(
+    int yyyy,
+    int mm,
+  ) async {
     // ignore: prefer_const_declarations
     final path = r'/api/items/{yyyy}/{mm}'
-      .replaceAll('{yyyy}', yyyy.toString())
-      .replaceAll('{mm}', mm.toString());
+        .replaceAll('{yyyy}', yyyy.toString())
+        .replaceAll('{mm}', mm.toString());
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -220,7 +241,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -240,8 +260,14 @@ class ApiApi {
   /// * [int] yyyy (required):
   ///
   /// * [int] mm (required):
-  Future<void> getItemsUserApiItemsYyyyMmGet(int yyyy, int mm,) async {
-    final response = await getItemsUserApiItemsYyyyMmGetWithHttpInfo(yyyy, mm,);
+  Future<void> getItemsUserApiItemsYyyyMmGet(
+    int yyyy,
+    int mm,
+  ) async {
+    final response = await getItemsUserApiItemsYyyyMmGetWithHttpInfo(
+      yyyy,
+      mm,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -262,7 +288,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -300,7 +325,14 @@ class ApiApi {
   /// * [String] clientId:
   ///
   /// * [String] clientSecret:
-  Future<Response> loginForAccessTokenApiTokenPostWithHttpInfo(String username, String password, { String? grantType, String? scope, String? clientId, String? clientSecret, }) async {
+  Future<Response> loginForAccessTokenApiTokenPostWithHttpInfo(
+    String username,
+    String password, {
+    String? grantType,
+    String? scope,
+    String? clientId,
+    String? clientSecret,
+  }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/token';
 
@@ -358,17 +390,34 @@ class ApiApi {
   /// * [String] clientId:
   ///
   /// * [String] clientSecret:
-  Future<Token?> loginForAccessTokenApiTokenPost(String username, String password, { String? grantType, String? scope, String? clientId, String? clientSecret, }) async {
-    final response = await loginForAccessTokenApiTokenPostWithHttpInfo(username, password,  grantType: grantType, scope: scope, clientId: clientId, clientSecret: clientSecret, );
+  Future<Token?> loginForAccessTokenApiTokenPost(
+    String username,
+    String password, {
+    String? grantType,
+    String? scope,
+    String? clientId,
+    String? clientSecret,
+  }) async {
+    final response = await loginForAccessTokenApiTokenPostWithHttpInfo(
+      username,
+      password,
+      grantType: grantType,
+      scope: scope,
+      clientId: clientId,
+      clientSecret: clientSecret,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
     // When a remote server returns no body with a status of 204, we shall not decode it.
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Token',) as Token;
-    
+    if (response.body.isNotEmpty &&
+        response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'Token',
+      ) as Token;
     }
     return null;
   }
@@ -384,11 +433,15 @@ class ApiApi {
   /// * [int] mm (required):
   ///
   /// * [Object] body (required):
-  Future<Response> postItemsUserApiItemsYyyyMmPostWithHttpInfo(int yyyy, int mm, Object body,) async {
+  Future<Response> postItemsUserApiItemsYyyyMmPostWithHttpInfo(
+    int yyyy,
+    int mm,
+    Object body,
+  ) async {
     // ignore: prefer_const_declarations
     final path = r'/api/items/{yyyy}/{mm}'
-      .replaceAll('{yyyy}', yyyy.toString())
-      .replaceAll('{mm}', mm.toString());
+        .replaceAll('{yyyy}', yyyy.toString())
+        .replaceAll('{mm}', mm.toString());
 
     // ignore: prefer_final_locals
     Object? postBody = body;
@@ -398,7 +451,6 @@ class ApiApi {
     final formParams = <String, String>{};
 
     const contentTypes = <String>['application/json'];
-
 
     return apiClient.invokeAPI(
       path,
@@ -420,8 +472,16 @@ class ApiApi {
   /// * [int] mm (required):
   ///
   /// * [Object] body (required):
-  Future<void> postItemsUserApiItemsYyyyMmPost(int yyyy, int mm, Object body,) async {
-    final response = await postItemsUserApiItemsYyyyMmPostWithHttpInfo(yyyy, mm, body,);
+  Future<void> postItemsUserApiItemsYyyyMmPost(
+    int yyyy,
+    int mm,
+    Object body,
+  ) async {
+    final response = await postItemsUserApiItemsYyyyMmPostWithHttpInfo(
+      yyyy,
+      mm,
+      body,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -436,10 +496,12 @@ class ApiApi {
   /// * [String] username (required):
   ///
   /// * [String] passwd (required):
-  Future<Response> postWebUserApiUserUsernamePostWithHttpInfo(String username, String passwd,) async {
+  Future<Response> postWebUserApiUserUsernamePostWithHttpInfo(
+    String username,
+    String passwd,
+  ) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/user/{username}'
-      .replaceAll('{username}', username);
+    final path = r'/api/user/{username}'.replaceAll('{username}', username);
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -448,10 +510,9 @@ class ApiApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-      queryParams.addAll(_queryParams('', 'passwd', passwd));
+    queryParams.addAll(_queryParams('', 'passwd', passwd));
 
     const contentTypes = <String>[];
-
 
     return apiClient.invokeAPI(
       path,
@@ -471,8 +532,14 @@ class ApiApi {
   /// * [String] username (required):
   ///
   /// * [String] passwd (required):
-  Future<void> postWebUserApiUserUsernamePost(String username, String passwd,) async {
-    final response = await postWebUserApiUserUsernamePostWithHttpInfo(username, passwd,);
+  Future<void> postWebUserApiUserUsernamePost(
+    String username,
+    String passwd,
+  ) async {
+    final response = await postWebUserApiUserUsernamePostWithHttpInfo(
+      username,
+      passwd,
+    );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

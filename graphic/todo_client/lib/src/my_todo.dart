@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/services.dart';
 import 'root_data.dart';
+import 'my_user_table.dart';
 
 class MyTodo extends StatefulWidget {
   const MyTodo({Key? key}) : super(key: key);
 
-  static const callName = "/todo";
+  static const callName = "/Todo";
 
   @override
   State<MyTodo> createState() => _MyTodo();
@@ -15,26 +19,42 @@ class MyTodo extends StatefulWidget {
 
 class _MyTodo extends State<MyTodo> {
   static const title = "ToDo list";
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  bool jsonFlag = false;
 
   @override
   Widget build(BuildContext context) {
     final RootData rootData = Provider.of<RootData>(context, listen: true);
     _MyCustomPainter me = _MyCustomPainter(rootData);
+
     return Scaffold(
         appBar: AppBar(
             title: const Text(title),
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back_ios),
-            )),
+            ),
+            actions: [
+              IconButton(
+                  icon: const Icon(Icons.toggle_off),
+                  onPressed: () => {
+                        setState(() {
+                          jsonFlag = !jsonFlag;
+                        })
+                      }),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => {
+                  rootData.pushNamed(context, MyUserTable.callName,
+                      (BuildContext context) => const MyUserTable(), null)
+                },
+              )
+            ]),
         body: Column(children: [
           Center(
               child: TableCalendar(
                   firstDay: DateTime.utc(0, 1, 1),
                   lastDay: DateTime.utc(2999, 12, 31),
-                  headerStyle: const HeaderStyle(
-                    formatButtonVisible: false,
-                  ),
                   selectedDayPredicate: (day) {
                     return isSameDay(rootData.selected, day);
                   },
@@ -50,22 +70,31 @@ class _MyTodo extends State<MyTodo> {
                     return rootData.sampleEvents[date] ?? [];
                   },
                   focusedDay: rootData.focused,
-                  calendarFormat: CalendarFormat.month,
-                  onFormatChanged: (format) => {})),
+                  calendarFormat: _calendarFormat,
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  })),
           Expanded(
               child: SizedBox(
                   width: double.infinity,
                   height: double.infinity,
-                  child: GestureDetector(
-                      onTapUp: (details) {
-                        //
-                        double dx = details.localPosition.dx;
-                        double dy = details.localPosition.dy;
-                        setState(() {
-                          me.setPoint(context, rootData.selected, dx, dy, back);
-                        });
-                      },
-                      child: CustomPaint(painter: me))))
+                  child: jsonFlag
+                      ? MyJson(rootData: rootData)
+                      : GestureDetector(
+                          onTapUp: (details) {
+                            //
+                            double dx = details.localPosition.dx;
+                            double dy = details.localPosition.dy;
+                            setState(() {
+                              me.setPoint(
+                                  context, rootData.selected, dx, dy, back);
+                            });
+                          },
+                          child: CustomPaint(painter: me))))
         ]));
   }
 
@@ -312,5 +341,77 @@ class _MyCustomPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+}
+
+class MyJson extends StatefulWidget {
+  final RootData rootData;
+  const MyJson({required this.rootData, Key? key}) : super(key: key);
+
+  @override
+  createState() => _MyJson();
+}
+
+class _MyJson extends State<MyJson> {
+  final myController = TextEditingController();
+
+  void save(BuildContext context, RootData rootData) {
+    DateTime selectDateTime = DateTime.utc(widget.rootData.selected!.year,
+        widget.rootData.selected!.month, widget.rootData.selected!.day);
+    String text = myController.text;
+    final object = json.decode(text);
+    widget.rootData.sampleEvents[selectDateTime] = object;
+  }
+
+  void load(BuildContext context, RootData rootData) {
+    DateTime selectDateTime = DateTime.utc(widget.rootData.selected!.year,
+        widget.rootData.selected!.month, widget.rootData.selected!.day);
+    if (widget.rootData.sampleEvents.containsKey(selectDateTime)) {
+      List eventList = widget.rootData.sampleEvents[selectDateTime]!;
+      myController.text =
+          const JsonEncoder.withIndent('    ').convert(eventList);
+    } else {
+      myController.text = "{}";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final RootData rootData = Provider.of<RootData>(context, listen: true);
+    //
+    load(context, rootData);
+    //
+    return Row(children: [
+      NavigationRail(
+        destinations: const [
+          NavigationRailDestination(
+            icon: Icon(Icons.get_app),
+            label: Text('Save'),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.upload),
+            label: Text('Load'),
+          ),
+        ],
+        selectedIndex: null,
+        onDestinationSelected: (index) {
+          if (index == 0) {
+            save(context, rootData);
+          } else {
+            load(context, rootData);
+          }
+        },
+      ),
+      Container(
+          alignment: Alignment.topLeft,
+          child: SingleChildScrollView(
+              child: Container(
+                  alignment: Alignment.centerLeft,
+                  width: 800,
+                  child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: myController))))
+    ]);
   }
 }

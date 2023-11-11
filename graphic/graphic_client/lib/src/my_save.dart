@@ -103,8 +103,6 @@ class _MySave extends State<MySave> {
   static Future<Map?> getUrl() async {
     String loadIP = await rootBundle.loadString('./ip.json');
     ipAdressData = json.decode(loadIP);
-    print(ipAdressData);
-    print(loadIP);
     return ipAdressData;
   }
 

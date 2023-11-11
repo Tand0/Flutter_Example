@@ -16,6 +16,7 @@ class MyLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     final RootData rootData = Provider.of<RootData>(context, listen: true);
     _editingController.text = rootData.userName;
+
     return Scaffold(
       body: Center(
         child: Container(
