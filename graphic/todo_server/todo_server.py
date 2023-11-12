@@ -3,14 +3,14 @@ from typing import Union
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import PlainTextResponse
-from fastapi import APIRouter
+from fastapi.responses import PlainTextResponse, JSONResponse
 
 from jose import JWTError, jwt
 import passlib.hash
 from pydantic import BaseModel
 
 import uvicorn
+import json
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,15 +35,9 @@ class TokenData(BaseModel):
     username: Union[str, None] = None
 
 
-class Item(BaseModel):
-    id: int
-    name: str
-
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
-router = APIRouter(prefix='/api', tags=['api'])
 
 # for CORS start
 app.add_middleware(
@@ -95,26 +89,21 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    print("step1")
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    print("step2")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            print("step3")
             raise credentials_exception
         token_data = TokenData(username=username)
     except JWTError:
-        print("step4")
         raise credentials_exception
     user = get_user(username=token_data.username)
     if user is None:
-        print("step5")
         raise credentials_exception
     return user
 
@@ -124,10 +113,8 @@ def get_top():
     return "<html><body>hello world</body></html>"
 
 
-@router.post("/token", response_model=Token)
+@app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    print(form_data.username)
-    print(form_data.password)
     hashed_password = get_password_hash(form_data.password)
     user = authenticate_user(form_data.username, hashed_password)
     if user is None:
@@ -143,83 +130,60 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/user")
+@app.get("/user", response_model=list)
 def get_web_user(_: User = Depends(get_current_user)):
     global real_db
     result = []
-    for k, v in real_db:
+    for k, _ in real_db.items():
         result.append(k)
     return result
 
 
-@router.post("/user/{username}")
-def post_web_user(username: str, passwd: str, user: User = Depends(get_current_user)):
+@app.post("/user")
+def post_web_user(username: str, passwd: str, _: User = Depends(get_current_user)):
     global real_db
-    if (user.username == "root"):
-        if (user.username == username):
-            return "NG"
-    real_db[username] = get_password_hash(passwd)
+    real_db[username] = {"username": username, "hashed_password": get_password_hash(passwd)}
     return "OK"
 
 
-@router.delete("/user/{username}")
-def delete_web_user(username: str, user: User = Depends(get_current_user)):
+@app.delete("/user")
+def delete_web_user(username: str, _: User = Depends(get_current_user)):
     global real_db
-    if (user.username == "root"):
-        return "NG"
     if (username in real_db):
-        real_db.remove(username)
+        del real_db[username]
     return "OK"
 
 
 ITEM = {}
 
 
-@router.get("/items/All")
-def get_items(_: User = Depends(get_current_user)):
-    return ITEM
+@app.get("/items/{yyyy}/{mm}", response_model=str)
+def get_items_user(yyyy: int, mm: int, _: User = Depends(get_current_user)):
+    year = str(yyyy)
+    month = str(mm)
+    if (year in ITEM):
+        if (month in ITEM[year]):
+            result = json.dumps(ITEM[year][month])
+            return result
+    return "{}"
 
 
-@router.get("/items/All/{yyyy}/{mm}")
-def get_items_all(yyyy: int, mm: int, _: User = Depends(get_current_user)):
-    if (str(yyyy) in ITEM):
-        if (str(mm) in ITEM[str(yyyy)]):
-            return ITEM[str(yyyy)][str(mm)]
-    return {}
-
-
-@router.get("/items/{yyyy}/{mm}")
-def get_items_user(yyyy: int, mm: int, user: User = Depends(get_current_user)):
-    if (str(yyyy) in ITEM):
-        if (str(mm) in ITEM[str(yyyy)]):
-            if (user.username in ITEM[str(yyyy)][str(mm)]):
-                return ITEM[str(yyyy)][str(mm)][user.username]
-    return {}
-
-
-@router.post("/items/{yyyy}/{mm}")
-def post_items_user(yyyy: int, mm: int, event: dict, user: User = Depends(get_current_user)):
-    if (str(yyyy) not in ITEM):
-        ITEM[str(yyyy)] = {}
-    if (str(mm) not in ITEM):
-        ITEM[str(yyyy)][str(mm)] = {}
-    ITEM[str(yyyy)][mm][user.username] = event
+@app.post("/items/{yyyy}/{mm}/{dd}", response_class=JSONResponse)
+def post_items_user(yyyy: int, mm: int, dd: int, event: str, user: User = Depends(get_current_user)):
+    year = str(yyyy)
+    month = str(mm)
+    day = str(dd)
+    print(event)
+    if (year not in ITEM):
+        ITEM[str(year)] = {}
+    if (month not in ITEM[year]):
+        ITEM[year][month] = {}
+    if (dd not in ITEM[year][month]):
+        ITEM[year][month][day] = {}
+    if (user["username"] not in ITEM[year][month][day]):
+        ITEM[year][month][day][user["username"]] = {}
+    ITEM[year][month][day][user["username"]] = event
     return "OK"
-
-
-@router.delete("/items/{yyyy}/{mm}")
-def delete_items_user(yyyy: int, mm: int, user: User = Depends(get_current_user)):
-    if (str(yyyy) not in ITEM):
-        return
-    if (str(mm) not in ITEM[str(yyyy)]):
-        return
-    if (user.username in ITEM[str(yyyy)][str(mm)]):
-        return
-    ITEM[str(yyyy)][mm].remove(user.username)
-    return "OK"
-
-
-app.include_router(router)
 
 
 def main():

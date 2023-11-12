@@ -42,14 +42,13 @@ import 'package:openapi/api.dart';
 // TODO Configure OAuth2 access token for authorization: OAuth2PasswordBearer
 //defaultApiClient.getAuthentication<OAuth>('OAuth2PasswordBearer').accessToken = 'YOUR_ACCESS_TOKEN';
 
-final api_instance = ApiApi();
-final yyyy = 56; // int | 
-final mm = 56; // int | 
+final api_instance = DefaultApi();
+final username = username_example; // String | 
 
 try {
-    api_instance.deleteItemsUserApiItemsYyyyMmDelete(yyyy, mm);
+    api_instance.deleteWebUserUserDelete(username);
 } catch (e) {
-    print('Exception when calling ApiApi->deleteItemsUserApiItemsYyyyMmDelete: $e\n');
+    print('Exception when calling DefaultApi->deleteWebUserUserDelete: $e\n');
 }
 
 ```
@@ -60,16 +59,13 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*ApiApi* | [**deleteItemsUserApiItemsYyyyMmDelete**](doc//ApiApi.md#deleteitemsuserapiitemsyyyymmdelete) | **DELETE** /api/items/{yyyy}/{mm} | Delete Items User
-*ApiApi* | [**deleteWebUserApiUserUsernameDelete**](doc//ApiApi.md#deletewebuserapiuserusernamedelete) | **DELETE** /api/user/{username} | Delete Web User
-*ApiApi* | [**getItemsAllApiItemsAllYyyyMmGet**](doc//ApiApi.md#getitemsallapiitemsallyyyymmget) | **GET** /api/items/All/{yyyy}/{mm} | Get Items All
-*ApiApi* | [**getItemsApiItemsAllGet**](doc//ApiApi.md#getitemsapiitemsallget) | **GET** /api/items/All | Get Items
-*ApiApi* | [**getItemsUserApiItemsYyyyMmGet**](doc//ApiApi.md#getitemsuserapiitemsyyyymmget) | **GET** /api/items/{yyyy}/{mm} | Get Items User
-*ApiApi* | [**getWebUserApiUserGet**](doc//ApiApi.md#getwebuserapiuserget) | **GET** /api/user | Get Web User
-*ApiApi* | [**loginForAccessTokenApiTokenPost**](doc//ApiApi.md#loginforaccesstokenapitokenpost) | **POST** /api/token | Login For Access Token
-*ApiApi* | [**postItemsUserApiItemsYyyyMmPost**](doc//ApiApi.md#postitemsuserapiitemsyyyymmpost) | **POST** /api/items/{yyyy}/{mm} | Post Items User
-*ApiApi* | [**postWebUserApiUserUsernamePost**](doc//ApiApi.md#postwebuserapiuserusernamepost) | **POST** /api/user/{username} | Post Web User
+*DefaultApi* | [**deleteWebUserUserDelete**](doc//DefaultApi.md#deletewebuseruserdelete) | **DELETE** /user | Delete Web User
+*DefaultApi* | [**getItemsUserItemsYyyyMmGet**](doc//DefaultApi.md#getitemsuseritemsyyyymmget) | **GET** /items/{yyyy}/{mm} | Get Items User
 *DefaultApi* | [**getTopGet**](doc//DefaultApi.md#gettopget) | **GET** / | Get Top
+*DefaultApi* | [**getWebUserUserGet**](doc//DefaultApi.md#getwebuseruserget) | **GET** /user | Get Web User
+*DefaultApi* | [**loginForAccessTokenTokenPost**](doc//DefaultApi.md#loginforaccesstokentokenpost) | **POST** /token | Login For Access Token
+*DefaultApi* | [**postItemsUserItemsYyyyMmDdPost**](doc//DefaultApi.md#postitemsuseritemsyyyymmddpost) | **POST** /items/{yyyy}/{mm}/{dd} | Post Items User
+*DefaultApi* | [**postWebUserUserPost**](doc//DefaultApi.md#postwebuseruserpost) | **POST** /user | Post Web User
 
 
 ## Documentation For Models

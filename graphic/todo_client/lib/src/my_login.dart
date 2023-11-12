@@ -58,17 +58,6 @@ class MyLogin extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
                 child: const Text('ENTER'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  rootData.userName = _editingController.text;
-                  rootData.userCommuinity = _passController.text;
-                  rootData.isOffline = true;
-                  rootData.pushNamed(context, MyTodo.callName,
-                      (BuildContext context) => const MyTodo(), null);
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-                child: const Text('ENTER -- offline --'),
               )
             ],
           ),

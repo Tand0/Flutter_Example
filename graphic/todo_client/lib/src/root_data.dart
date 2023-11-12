@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'my_login.dart';
-import 'package:openapi/api.dart';
+import 'package:openapi/api.dart' as openapi;
 import 'package:flutter/services.dart';
 
 typedef MyTodoCallback = void Function();
@@ -48,63 +48,147 @@ class RootData with ChangeNotifier {
   bool isOffline = false;
   DateTime focused = DateTime.now();
   DateTime? selected = DateTime.now();
-  final Map<DateTime, List> sampleEvents = {};
+  final Map<DateTime, List> myEvents = {};
+  final Map<DateTime, List> otherEvents = {};
   List<MenuItem> menuItemList = [];
   String targetURL = "";
 
-  ApiApi? apiApi;
+  openapi.DefaultApi? api;
   String accessToken = "";
 
   void startLogin(MyTodoCallback okCallback, MyTodoCallback ngCallback) {
     Future(() async {
-      String loadIP = await rootBundle.loadString('./ip.json');
-      targetURL = json.decode(loadIP)["url"];
-
-      ApiClient defaultApiClient = ApiClient(basePath: targetURL);
-      apiApi = ApiApi(defaultApiClient);
-      //
-      //
       try {
-        Token? result = await apiApi!
-            .loginForAccessTokenApiTokenPost(userName, userCommuinity);
-        //
-        if (result != null) {
-          accessToken = result.accessToken;
-          okCallback();
-        } else {
-          accessToken = '';
+        String loadIP = await rootBundle.loadString('./ip.json');
+        targetURL = json.decode(loadIP)["url"];
 
-          ngCallback();
+        openapi.ApiClient defaultApiClient =
+            openapi.ApiClient(basePath: targetURL);
+        openapi.DefaultApi defaultApi = openapi.DefaultApi(defaultApiClient);
+
+        openapi.Token? result = await defaultApi.loginForAccessTokenTokenPost(
+            userName, userCommuinity);
+        //
+        if (result == null) {
+          throw openapi.ApiException(422, "Login failed");
         }
+        accessToken = result.accessToken;
+
+        openapi.HttpBearerAuth auth = openapi.HttpBearerAuth();
+        auth.accessToken = accessToken;
+        openapi.ApiClient apiClient =
+            openapi.ApiClient(basePath: targetURL, authentication: auth);
+        api = openapi.DefaultApi(apiClient);
+
+        okCallback();
       } catch (e) {
         ngCallback();
       }
     });
   }
 
-  void createUser(String targetUserName, String targetPassword,
-      MyTodoCallback okCallback, MyTodoCallback ngCallback) {
+  void createUser(
+      String targetUserName, String targetPassword, MyTodoCallback ngCallback) {
     Future(() async {
       try {
-        if ((targetUserName == '') ||
-            (targetUserName == 'root') ||
-            (targetPassword == '')) {
-          print("aaa");
-          throw ApiException(422, "Unprocessable Entity");
+        if ((api == null) || (targetUserName == '') || (targetPassword == '')) {
+          throw openapi.ApiException(422, "Unprocessable Entity");
         }
-        print("bbb");
-        HttpBearerAuth auth = HttpBearerAuth();
-        auth.accessToken(accessToken);
-        ApiClient defaultApiClient =
-            ApiClient(basePath: targetURL, authentication: auth);
-        ApiApi apiApi = ApiApi(defaultApiClient);
-        await apiApi.postWebUserApiUserUsernamePost(
-            targetUserName, targetPassword);
-        okCallback();
+
+        await api!.postWebUserUserPost(targetUserName, targetPassword);
+        notifyListeners();
       } catch (e) {
-        print(e.toString());
         ngCallback();
       }
+    });
+  }
+
+  Future<List?> getUser() async {
+    if (api == null) {
+      throw openapi.ApiException(422, "Unprocessable Entity");
+    }
+    List? userNameList = await api!.getWebUserUserGet();
+    if (userNameList != null) {
+      otherUserNameList = [];
+      for (var userName in userNameList) {
+        otherUserNameList.add(userName.toString());
+      }
+    }
+    return otherUserNameList;
+  }
+
+  Future<void> deletetUser(String targetUserName) async {
+    if (api == null) {
+      throw openapi.ApiException(422, "Unprocessable Entity");
+    }
+    await api!.deleteWebUserUserDelete(targetUserName);
+    //
+    notifyListeners();
+    //
+  }
+
+  void postEvent(DateTime selectDateTime) {
+    Future(() async {
+      if (api == null) {
+        throw openapi.ApiException(422, "Unprocessable Entity");
+      }
+      //
+      int yyyy = selectDateTime.year;
+      int mm = selectDateTime.month;
+      int dd = selectDateTime.day;
+      //
+      List body = [];
+      myEvents.forEach((key, value) {
+        if ((key.year == yyyy) && (key.month == mm) && (key.day == dd)) {
+          print("xxx");
+          print(value.toString());
+          body.addAll(value);
+        }
+      });
+      String jsonBody = json.encode(body);
+      //
+      await api!.postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, jsonBody);
+    });
+  }
+
+  Future<void> getEvent(DateTime? selectDateTime) async {
+    if ((api == null) || (selectDateTime == null)) {
+      throw openapi.ApiException(422, "Unprocessable Entity");
+    }
+    //
+    final int yyyy = selectDateTime.year;
+    final int mm = selectDateTime.month;
+    //
+    String? body = await api!.getItemsUserItemsYyyyMmGet(yyyy, mm);
+    if (body == null) {
+      throw openapi.ApiException(422, "Body is null");
+    }
+    var realBody = json.decode(body);
+    realBody = json.decode(realBody);
+    // remove dvent
+    myEvents.forEach((targetDate, value) {
+      if ((targetDate.year == yyyy) && (targetDate.year == mm)) {
+        myEvents.remove(targetDate);
+      }
+    });
+    otherEvents.forEach((targetDate, value) {
+      if ((targetDate.year == yyyy) && (targetDate.year == mm)) {
+        myEvents.remove(targetDate);
+      }
+    });
+    //
+    // add event
+    realBody.forEach((dayString, value) {
+      int day = int.parse(dayString);
+      DateTime targetDay = DateTime.utc(yyyy, mm, day);
+      value.forEach((targetName, v2) {
+        List v3 = json.decode(v2);
+        if (targetName.toString() == userName) {
+          myEvents[targetDay] = v3;
+        } else {
+          otherEvents[targetDay] = v3;
+        }
+      });
     });
   }
 }

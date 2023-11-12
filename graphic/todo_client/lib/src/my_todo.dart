@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/services.dart';
@@ -22,10 +21,67 @@ class _MyTodo extends State<MyTodo> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   bool jsonFlag = false;
 
+  Column myTableCalendar(RootData rootData) {
+    _MyCustomPainter me = _MyCustomPainter(rootData);
+
+    return Column(children: [
+      Center(
+          child: TableCalendar(
+              firstDay: DateTime.utc(rootData.selected!.year - 10, 1, 1),
+              lastDay: DateTime.utc(rootData.selected!.year + 10, 12, 31),
+              selectedDayPredicate: (day) {
+                return isSameDay(rootData.selected, day);
+              },
+              onDaySelected: (selected, focused) {
+                if (!isSameDay(rootData.selected, selected)) {
+                  rootData.menuItemList = [];
+                  rootData.selected = selected;
+                  rootData.focused = focused;
+                  back();
+                }
+              },
+              onPageChanged: (focusedDay) {
+                rootData.focused = focusedDay;
+                setState(() {
+                  Future(() async {
+                    await rootData.getEvent(focusedDay);
+                  });
+                });
+              },
+              eventLoader: (date) {
+                return rootData.myEvents[date] ?? [];
+              },
+              focusedDay: rootData.focused,
+              calendarFormat: _calendarFormat,
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              })),
+      Expanded(
+          child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: jsonFlag
+                  ? MyJson(rootData: rootData)
+                  : GestureDetector(
+                      onTapUp: (details) {
+                        //
+                        double dx = details.localPosition.dx;
+                        double dy = details.localPosition.dy;
+                        setState(() {
+                          me.setPoint(context, rootData.selected, dx, dy, back);
+                        });
+                      },
+                      child: CustomPaint(painter: me))))
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final RootData rootData = Provider.of<RootData>(context, listen: true);
-    _MyCustomPainter me = _MyCustomPainter(rootData);
 
     return Scaffold(
         appBar: AppBar(
@@ -50,52 +106,20 @@ class _MyTodo extends State<MyTodo> {
                 },
               )
             ]),
-        body: Column(children: [
-          Center(
-              child: TableCalendar(
-                  firstDay: DateTime.utc(0, 1, 1),
-                  lastDay: DateTime.utc(2999, 12, 31),
-                  selectedDayPredicate: (day) {
-                    return isSameDay(rootData.selected, day);
-                  },
-                  onDaySelected: (selected, focused) {
-                    if (!isSameDay(rootData.selected, selected)) {
-                      rootData.menuItemList = [];
-                      rootData.selected = selected;
-                      rootData.focused = focused;
-                      back();
-                    }
-                  },
-                  eventLoader: (date) {
-                    return rootData.sampleEvents[date] ?? [];
-                  },
-                  focusedDay: rootData.focused,
-                  calendarFormat: _calendarFormat,
-                  onFormatChanged: (format) {
-                    if (_calendarFormat != format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    }
-                  })),
-          Expanded(
-              child: SizedBox(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: jsonFlag
-                      ? MyJson(rootData: rootData)
-                      : GestureDetector(
-                          onTapUp: (details) {
-                            //
-                            double dx = details.localPosition.dx;
-                            double dy = details.localPosition.dy;
-                            setState(() {
-                              me.setPoint(
-                                  context, rootData.selected, dx, dy, back);
-                            });
-                          },
-                          child: CustomPaint(painter: me))))
-        ]));
+        body: FutureBuilder<void>(
+            future: rootData.getEvent(rootData.selected),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return const Text('Image loading...');
+                default:
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return myTableCalendar(rootData);
+                  }
+              }
+            }));
   }
 
   void back() {
@@ -114,25 +138,38 @@ class _MyCustomPainter extends CustomPainter {
 
   void cut(DateTime selectDateTime, List? event, MenuItem item,
       MyTodoCallback back) {
-    if (!rootData.sampleEvents.containsKey(selectDateTime)) {
+    if (!rootData.myEvents.containsKey(selectDateTime)) {
       return;
     }
     if (event == null) {
       return;
     }
-    rootData.sampleEvents[selectDateTime]?.remove(event);
+    for (int i = 0; i < rootData.myEvents[selectDateTime]!.length; i++) {
+      List indexIvent = rootData.myEvents[selectDateTime]![i];
+      if ((indexIvent[0] == event[0]) &&
+          (indexIvent[1] == event[1]) &&
+          (indexIvent[2] == event[2]) &&
+          (indexIvent[3] == event[3])) {
+        rootData.myEvents[selectDateTime]?.removeAt(i);
+        break;
+      }
+    }
+    //
+    rootData.postEvent(selectDateTime);
+    back();
     copy(selectDateTime, event, item, back);
   }
 
   void copy(DateTime selectDateTime, List? event, MenuItem item,
       MyTodoCallback back) {
-    if (event != null) {
+    if (event == null) {
       return;
     }
+    print(copy);
     Future(() async {
-      final data = ClipboardData(text: event?[4]);
-      await Clipboard.setData(data);
-      back();
+      String text = event[5];
+      print(text);
+      Clipboard.setData(ClipboardData(text: text));
     });
   }
 
@@ -143,13 +180,16 @@ class _MyCustomPainter extends CustomPainter {
       String? copyText = clipboard?.text;
       copyText ??= "xxx";
       List eventList = [];
-      if (rootData.sampleEvents.containsKey(selectDateTime)) {
-        eventList = rootData.sampleEvents[selectDateTime]!;
+      if (rootData.myEvents.containsKey(selectDateTime)) {
+        eventList = rootData.myEvents[selectDateTime]!;
       }
       double dx = item.xMin;
       double dy = item.yMin;
       eventList.add([dx, dx + 1, dy, dy + 1, rootData.userName, copyText]);
-      rootData.sampleEvents[selectDateTime] = eventList;
+      rootData.myEvents[selectDateTime] = eventList;
+
+      //
+      rootData.postEvent(selectDateTime);
       back();
     });
   }
@@ -180,8 +220,8 @@ class _MyCustomPainter extends CustomPainter {
       DateTime selectDateTime = DateTime.utc(rootData.selected!.year,
           rootData.selected!.month, rootData.selected!.day);
       bool flag = true;
-      if (rootData.sampleEvents.containsKey(selectDateTime)) {
-        List eventList = rootData.sampleEvents[selectDateTime]!;
+      if (rootData.myEvents.containsKey(selectDateTime)) {
+        List eventList = rootData.myEvents[selectDateTime]!;
         for (List event in eventList) {
           if ((event[0] < dx) &&
               (dx < event[1]) &&
@@ -237,53 +277,59 @@ class _MyCustomPainter extends CustomPainter {
     text.paint(canvas, const Offset(0, 0));
     DateTime selectDateTime = DateTime.utc(rootData.selected!.year,
         rootData.selected!.month, rootData.selected!.day);
-    if (rootData.sampleEvents.containsKey(selectDateTime)) {
-      List eventList = rootData.sampleEvents[selectDateTime]!;
-      for (List event in eventList) {
-        final double dx = event[0].toDouble();
-        final double dy = event[2].toDouble();
-        final String name = event[4];
-        title = event[5];
-        TextPainter textName = TextPainter(
-          textDirection: TextDirection.ltr,
-          text: TextSpan(
-            style: sampleTextStyle,
-            text: name,
-          ),
-        )..layout();
-        event[3] = dy + text.height;
-        //
-        TextPainter textTitle = TextPainter(
-          textDirection: TextDirection.ltr,
-          text: TextSpan(
-            style: sampleTextStyle,
-            text: title,
-          ),
-        )..layout();
-        double dxMax = dx + textTitle.width;
-        double dyMax = dy + textName.height + textTitle.height;
-        event[1] = dxMax;
-        event[3] = dyMax;
-        //
-        paintX.style = PaintingStyle.fill;
-        if (dx < size.width / 3) {
-          paintX.color = Colors.yellow;
-        } else if (dx < size.width * 2 / 3) {
-          paintX.color = Colors.pink;
-        } else {
-          paintX.color = Colors.black12;
-        }
-        var path = Path();
-        path.moveTo(dx, dy);
-        path.lineTo(dx, dyMax);
-        path.lineTo(dxMax, dyMax);
-        path.lineTo(dxMax, dy);
-        path.close();
-        canvas.drawPath(path, paintX);
-        //
-        textName.paint(canvas, Offset(dx, dy));
-        textTitle.paint(canvas, Offset(dx, dy + textName.height));
+    List eventList = [];
+    if (rootData.myEvents.containsKey(selectDateTime)) {
+      eventList.addAll(rootData.myEvents[selectDateTime]!);
+    }
+    if (rootData.otherEvents.containsKey(selectDateTime)) {
+      eventList.addAll(rootData.otherEvents[selectDateTime]!);
+    }
+    for (List event in eventList) {
+      final double dx = event[0].toDouble();
+      final double dy = event[2].toDouble();
+      final String name = event[4];
+      title = event[5];
+      TextPainter textName = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          style: sampleTextStyle,
+          text: name,
+        ),
+      )..layout();
+      event[3] = dy + text.height;
+      //
+      TextPainter textTitle = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          style: sampleTextStyle,
+          text: title,
+        ),
+      )..layout();
+      double dxMax = dx + textTitle.width + 2;
+      double dyMax = dy + textName.height + textTitle.height + 2;
+      event[1] = dxMax;
+      event[3] = dyMax;
+      //
+      paintX.style = PaintingStyle.fill;
+      if (rootData.userName != name) {
+        paintX.color = Colors.black12;
+      } else if (dx < size.width / 3) {
+        paintX.color = Colors.lightBlue;
+      } else if (dx < size.width * 2 / 3) {
+        paintX.color = Colors.yellow;
+      } else {
+        paintX.color = Colors.black26;
       }
+      var path = Path();
+      path.moveTo(dx, dy + textName.height);
+      path.lineTo(dx, dyMax);
+      path.lineTo(dxMax, dyMax);
+      path.lineTo(dxMax, dy + textName.height);
+      path.close();
+      canvas.drawPath(path, paintX);
+      //
+      textName.paint(canvas, Offset(dx, dy));
+      textTitle.paint(canvas, Offset(dx, dy + textName.height));
     }
     if (rootData.menuItemList.isNotEmpty) {
       double dx = rootData.menuItemList[0].xMin;
@@ -360,14 +406,14 @@ class _MyJson extends State<MyJson> {
         widget.rootData.selected!.month, widget.rootData.selected!.day);
     String text = myController.text;
     final object = json.decode(text);
-    widget.rootData.sampleEvents[selectDateTime] = object;
+    widget.rootData.myEvents[selectDateTime] = object;
   }
 
   void load(BuildContext context, RootData rootData) {
     DateTime selectDateTime = DateTime.utc(widget.rootData.selected!.year,
         widget.rootData.selected!.month, widget.rootData.selected!.day);
-    if (widget.rootData.sampleEvents.containsKey(selectDateTime)) {
-      List eventList = widget.rootData.sampleEvents[selectDateTime]!;
+    if (widget.rootData.myEvents.containsKey(selectDateTime)) {
+      List eventList = widget.rootData.myEvents[selectDateTime]!;
       myController.text =
           const JsonEncoder.withIndent('    ').convert(eventList);
     } else {

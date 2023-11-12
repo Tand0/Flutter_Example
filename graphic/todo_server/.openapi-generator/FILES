@@ -1,13 +1,16 @@
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 analysis_options.yaml
+doc/ApiApi.md
 doc/DefaultApi.md
 doc/HTTPValidationError.md
 doc/Token.md
 doc/ValidationError.md
 git_push.sh
 lib/api.dart
+lib/api/api_api.dart
 lib/api/default_api.dart
 lib/api_client.dart
 lib/api_exception.dart
@@ -21,3 +24,8 @@ lib/model/http_validation_error.dart
 lib/model/token.dart
 lib/model/validation_error.dart
 pubspec.yaml
+test/api_api_test.dart
+test/default_api_test.dart
+test/http_validation_error_test.dart
+test/token_test.dart
+test/validation_error_test.dart

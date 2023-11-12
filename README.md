@@ -70,8 +70,9 @@
       - [Linux の場合](#linux-の場合)
       - [Windows の場合](#windows-の場合)
     - [openapi-generator でのクライアントコード生成](#openapi-generator-でのクライアントコード生成)
-    - [openapi-generator で生成したクライアントコード呼び出し(python用)](#openapi-generator-で生成したクライアントコード呼び出しpython用)
-    - [openapi-generator で生成したクライアントコード呼び出し(Dart/Flutter 編)](#openapi-generator-で生成したクライアントコード呼び出しdartflutter-編)
+    - [openapi-generator で生成したクライアントコードからの呼び出し(python用)](#openapi-generator-で生成したクライアントコードからの呼び出しpython用)
+    - [openapi-generator で生成したクライアントコードからの呼び出し(Dart/Flutter 編)](#openapi-generator-で生成したクライアントコードからの呼び出しdartflutter-編)
+      - [openapi-generator で生成したクライアントコードからの呼び出し(Dart/Flutter/OAuth2 編)](#openapi-generator-で生成したクライアントコードからの呼び出しdartflutteroauth2-編)
     - [CORS(クロスオリジンリソース共有)ポリシー 対策](#corsクロスオリジンリソース共有ポリシー-対策)
     - [動作確認(単純)](#動作確認単純)
     - [動作確認(OAuth2 認証ほかもろもろ)](#動作確認oauth2-認証ほかもろもろ)
@@ -122,7 +123,7 @@
   - [Widget として Flutter 作成フォルダにあるファイル--いわゆるasset--から表示する](#widget-として-flutter-作成フォルダにあるファイル--いわゆるasset--から表示する)
   - [Widget として web経由で表示する](#widget-として-web経由で表示する)
   - [Canvas に画像を表示する](#canvas-に画像を表示する)
-- [さらにこまごましたもの特集 -- 後でタイトル変更予定](#さらにこまごましたもの特集----後でタイトル変更予定)
+- [ToDo List を作ろう](#todo-list-を作ろう)
   - [Flutter アプリの国際化](#flutter-アプリの国際化)
   - [クリップボードの取得と設定](#クリップボードの取得と設定)
 
@@ -1795,7 +1796,7 @@ openapi-generator-cli generate -g dart-dio -i http://192.168.1.1:3002/openapi.js
 - 詳細は以下を参照してください
 - https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators.md
 
-### openapi-generator で生成したクライアントコード呼び出し(python用)
+### openapi-generator で生成したクライアントコードからの呼び出し(python用)
 
 - [実際に呼んでみたソースコード](./openapi/python_open_api_impl.py)
 
@@ -1821,7 +1822,7 @@ with ApiClient(configuration) as api_client:
         print("Exception when calling DefaultApi->login_for_access_token_token_post: %s\n" % e)
 ```
 
-###  openapi-generator で生成したクライアントコード呼び出し(Dart/Flutter 編)
+###  openapi-generator で生成したクライアントコードからの呼び出し(Dart/Flutter 編)
 - まずは環境構築
 
 
@@ -1836,11 +1837,68 @@ $ flutter create --template=app --platforms web --org github.com --project-name 
 dependencies:
   openapi:
     path: ../dart
-```
+```yaml
 
-- ――で、実際やってみるとバグ報告がでていますね…… 2023/11/10 時点
+- ――で、実際やってみるとバグ報告がでていますね…… 2023/11/11 時点
+  - ワークアラウンドを向こうに書き込んでいますので修正されていなければそちらを使ってください
   - https://github.com/OpenAPITools/openapi-generator/issues/13302
 
+- ――で、実際やってみるとちょっと複雑なDict/Listが混ざったようなコードはうまくいきませんね…… 2023/11/11時点
+  - 渡すコードを json で string 型にすれば渡せることを確認しました
+
+- OAuth2 が無い普通のものを呼び出すとだいたいこんな感じです
+```dart
+import 'package:openapi/api.dart' as openapi;
+//
+//
+        openapi.ApiClient defaultApiClient =
+            openapi.ApiClient(basePath: targetURL);
+        openapi.DefaultApi defaultApi = openapi.DefaultApi(defaultApiClient);
+```
+
+#### openapi-generator で生成したクライアントコードからの呼び出し(Dart/Flutter/OAuth2 編)
+
+
+- OAuth2 での呼び出しも確認しました
+  - ひと手間加える必要があります
+  - 詳細の [サーバのコードはここにあります](./graphic/todo_server/todo_server.py)
+  - 詳細の [クライアントのコードはここにあります](./graphic/todo_client/lib/src/root_data.dart)
+
+```dart
+import 'package:openapi/api.dart' as openapi;
+//
+//
+
+// フィールド値
+  openapi.DefaultApi? api;
+  String accessToken = "";
+
+// 初期設定
+        openapi.ApiClient defaultApiClient =
+            openapi.ApiClient(basePath: targetURL);
+        openapi.DefaultApi defaultApi = openapi.DefaultApi(defaultApiClient);
+
+        openapi.Token? result = await defaultApi.loginForAccessTokenTokenPost(
+            userName, userCommuinity);
+        //
+        if (result == null) {
+          throw openapi.ApiException(422, "Login failed");
+        }
+        accessToken = result.accessToken;
+
+        openapi.HttpBearerAuth auth = openapi.HttpBearerAuth();
+        auth.accessToken = accessToken;
+        openapi.ApiClient apiClient =
+            openapi.ApiClient(basePath: targetURL, authentication: auth);
+        api = openapi.DefaultApi(apiClient);
+
+// 初期設定がされていればこんな感じで呼び出せる
+    if (api == null) {
+      throw openapi.ApiException(422, "Unprocessable Entity");
+    }
+    List? userNameList = await api!.getWebUserUserGet();
+
+```
 
 
 ### CORS(クロスオリジンリソース共有)ポリシー 対策
@@ -2974,7 +3032,22 @@ class _MyCustomPainter extends CustomPainter {
 ```
 
 
-# さらにこまごましたもの特集 -- 後でタイトル変更予定
+# ToDo List を作ろう
+
+- 応用編です
+  - いろいろ機能が足りていませんが、サンプルとしては十分でしょう
+  -  [ToDoListのサーバのコードはここにあります](./graphic/todo_server/todo_server.py)
+  -  [ToDoListのクライアントのコードはここにあります](./graphic/todo_client/lib/main.dart")
+
+![ToDoListの画面イメージ](./graphic/todo_server/sample.png)
+
+- 主な機能はこんな感じです。適当に切り貼りして使ってください
+  - アプリの国際化――日本語が使えるようにする
+  - FastAPI + OAuth2 + Flutter クラサバ接続
+  - ログイン処理
+  - コピー＆ペースト / システムのクリップボードを使用した
+  - 力技でダイアログ上にポップアップメニューを出す
+  - カレンダーのライブラリの使用
 
 ## Flutter アプリの国際化
 
@@ -3007,15 +3080,22 @@ import 'package:flutter_localizations/flutter_localizations.dart';
       ], initialRoute: MyLogin.callName, routes: data.route)));
 ```
 
-
-- これで動きます。たぶん
+- これで動きました。
 
 
 ## クリップボードの取得と設定
 
+- コピー側
+```dart
+$ flutter pub add flutter_localizations --sdk=flutter
+$ flutter pub add intl:any
+```
 
-
-
+- ペースト側
+```dart
+$ flutter pub add flutter_localizations --sdk=flutter
+$ flutter pub add intl:any
+```
 
 
 

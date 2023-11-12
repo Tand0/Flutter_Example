@@ -17,38 +17,17 @@ void main() {
   // final instance = DefaultApi();
 
   group('tests for DefaultApi', () {
-    // Delete Items User
-    //
-    //Future deleteItemsUserItemsYyyyMmmmDelete(int yyyy, int mmmm) async
-    test('test deleteItemsUserItemsYyyyMmmmDelete', () async {
-      // TODO
-    });
-
     // Delete Web User
     //
-    //Future deleteWebUserUserUsernameDelete(String username) async
-    test('test deleteWebUserUserUsernameDelete', () async {
-      // TODO
-    });
-
-    // Get Items All
-    //
-    //Future getItemsAllItemsAllYyyyMmmmGet(int yyyy, int mmmm) async
-    test('test getItemsAllItemsAllYyyyMmmmGet', () async {
-      // TODO
-    });
-
-    // Get Items
-    //
-    //Future getItemsItemsAllGet() async
-    test('test getItemsItemsAllGet', () async {
+    //Future deleteWebUserUserDelete(String username) async
+    test('test deleteWebUserUserDelete', () async {
       // TODO
     });
 
     // Get Items User
     //
-    //Future getItemsUserItemsYyyyMmmmGet(int yyyy, int mmmm) async
-    test('test getItemsUserItemsYyyyMmmmGet', () async {
+    //Future<String> getItemsUserItemsYyyyMmGet(int yyyy, int mm) async
+    test('test getItemsUserItemsYyyyMmGet', () async {
       // TODO
     });
 
@@ -61,7 +40,7 @@ void main() {
 
     // Get Web User
     //
-    //Future getWebUserUserGet() async
+    //Future<List<String>> getWebUserUserGet() async
     test('test getWebUserUserGet', () async {
       // TODO
     });
@@ -75,15 +54,15 @@ void main() {
 
     // Post Items User
     //
-    //Future postItemsUserItemsYyyyMmmmPost(int yyyy, int mmmm, Object body) async
-    test('test postItemsUserItemsYyyyMmmmPost', () async {
+    //Future postItemsUserItemsYyyyMmDdPost(int yyyy, int mm, int dd, String userName, String event) async
+    test('test postItemsUserItemsYyyyMmDdPost', () async {
       // TODO
     });
 
     // Post Web User
     //
-    //Future postWebUserUserUsernamePost(String username, String passwd) async
-    test('test postWebUserUserUsernamePost', () async {
+    //Future postWebUserUserPost(String username, String passwd) async
+    test('test postWebUserUserPost', () async {
       // TODO
     });
 

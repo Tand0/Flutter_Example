@@ -9,23 +9,29 @@ class MyUserTable extends StatelessWidget {
   static const String callName = "/UserTable";
 
   static List<String> getColumn() {
-    return ["Name", "Delete", "Rename"];
+    return ["Name", "Delete"];
   }
 
-  List<DataCell> createTableRow(
+  List<DataRow> createDataRow(BuildContext context, RootData rootData) {
+    return rootData.otherUserNameList
+        .map((e) => DataRow(cells: createDataCell(context, rootData, e)))
+        .toList();
+  }
+
+  List<DataCell> createDataCell(
       BuildContext context, RootData rootData, String name) {
     List<DataCell>? target = [];
     target.add(DataCell(Text(name)));
-    target.add(DataCell(TextButton(
-        onPressed: () {
-          print("TODO");
-        },
-        child: Text(getColumn()[1]))));
-    target.add(DataCell(TextButton(
-        onPressed: () {
-          print("TODO");
-        },
-        child: Text(getColumn()[2]))));
+    if (((name == rootData.userName) || ('root' == rootData.userName)) &&
+        (name != rootData.userName)) {
+      target.add(DataCell(TextButton(
+          onPressed: () {
+            rootData.deletetUser(name);
+          },
+          child: Text(getColumn()[1]))));
+    } else {
+      target.add(const DataCell(Text('--')));
+    }
     return target;
   }
 
@@ -33,8 +39,6 @@ class MyUserTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final RootData rootData = Provider.of<RootData>(context, listen: true);
     List<String> column = getColumn();
-
-    List<DataRow> rowList = [];
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -55,11 +59,26 @@ class MyUserTable extends StatelessWidget {
         body: Container(
             alignment: Alignment.topLeft,
             child: SingleChildScrollView(
-                child: DataTable(
-                    showCheckboxColumn: false,
-                    columns:
-                        column.map((e) => DataColumn(label: Text(e))).toList(),
-                    rows: rowList))));
+                child: FutureBuilder<List?>(
+                    future: rootData.getUser(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List?> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Text('Image loading...');
+                        default:
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return DataTable(
+                                showCheckboxColumn: false,
+                                columns: column
+                                    .map((e) => DataColumn(label: Text(e)))
+                                    .toList(),
+                                rows: createDataRow(context, rootData));
+                          }
+                      }
+                    }))));
   }
 }
 
@@ -111,8 +130,7 @@ class _MyItemDialog extends State<MyItemDialog> {
               String password = passwordController.text;
 
               // createUser
-              widget.rootData
-                  .createUser(userName, password, () => oK(), () => nG());
+              widget.rootData.createUser(userName, password, () => nG());
 
               Navigator.of(context).pop();
             },
@@ -120,14 +138,6 @@ class _MyItemDialog extends State<MyItemDialog> {
         ]),
       ],
     );
-  }
-
-  void oK() {
-    showDialog<void>(
-        context: context,
-        builder: (_) {
-          return const AlertDialogSample(message: "OK!");
-        });
   }
 
   void nG() {
