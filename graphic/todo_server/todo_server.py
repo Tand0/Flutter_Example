@@ -35,6 +35,10 @@ class TokenData(BaseModel):
     username: Union[str, None] = None
 
 
+class DayEventBody(BaseModel):
+    event: str
+
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
@@ -169,11 +173,10 @@ def get_items_user(yyyy: int, mm: int, _: User = Depends(get_current_user)):
 
 
 @app.post("/items/{yyyy}/{mm}/{dd}", response_class=JSONResponse)
-def post_items_user(yyyy: int, mm: int, dd: int, event: str, user: User = Depends(get_current_user)):
+def post_items_user(yyyy: int, mm: int, dd: int, dayEventBody: DayEventBody, user: User = Depends(get_current_user)):
     year = str(yyyy)
     month = str(mm)
     day = str(dd)
-    print(event)
     if (year not in ITEM):
         ITEM[str(year)] = {}
     if (month not in ITEM[year]):
@@ -182,7 +185,7 @@ def post_items_user(yyyy: int, mm: int, dd: int, event: str, user: User = Depend
         ITEM[year][month][day] = {}
     if (user["username"] not in ITEM[year][month][day]):
         ITEM[year][month][day][user["username"]] = {}
-    ITEM[year][month][day][user["username"]] = event
+    ITEM[year][month][day][user["username"]] = dayEventBody.event
     return "OK"
 
 

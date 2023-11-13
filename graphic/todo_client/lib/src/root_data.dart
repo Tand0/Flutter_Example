@@ -87,20 +87,12 @@ class RootData with ChangeNotifier {
     });
   }
 
-  void createUser(
-      String targetUserName, String targetPassword, MyTodoCallback ngCallback) {
-    Future(() async {
-      try {
-        if ((api == null) || (targetUserName == '') || (targetPassword == '')) {
-          throw openapi.ApiException(422, "Unprocessable Entity");
-        }
-
-        await api!.postWebUserUserPost(targetUserName, targetPassword);
-        notifyListeners();
-      } catch (e) {
-        ngCallback();
-      }
-    });
+  Future<void> createUser(String targetUserName, String targetPassword) async {
+    if ((api == null) || (targetUserName == '') || (targetPassword == '')) {
+      throw openapi.ApiException(422, "Unprocessable Entity");
+    }
+    await api!.postWebUserUserPost(targetUserName, targetPassword);
+    notifyListeners();
   }
 
   Future<List?> getUser() async {
@@ -140,14 +132,13 @@ class RootData with ChangeNotifier {
       List body = [];
       myEvents.forEach((key, value) {
         if ((key.year == yyyy) && (key.month == mm) && (key.day == dd)) {
-          print("xxx");
-          print(value.toString());
           body.addAll(value);
         }
       });
       String jsonBody = json.encode(body);
+      openapi.DayEventBody dayEventBody = openapi.DayEventBody(event: jsonBody);
       //
-      await api!.postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, jsonBody);
+      await api!.postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, dayEventBody);
     });
   }
 

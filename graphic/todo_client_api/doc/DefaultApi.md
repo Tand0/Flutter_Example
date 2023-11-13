@@ -233,7 +233,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **postItemsUserItemsYyyyMmDdPost**
-> postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, event)
+> postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, dayEventBody)
 
 Post Items User
 
@@ -247,10 +247,10 @@ final api_instance = DefaultApi();
 final yyyy = 56; // int | 
 final mm = 56; // int | 
 final dd = 56; // int | 
-final event = event_example; // String | 
+final dayEventBody = DayEventBody(); // DayEventBody | 
 
 try {
-    api_instance.postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, event);
+    api_instance.postItemsUserItemsYyyyMmDdPost(yyyy, mm, dd, dayEventBody);
 } catch (e) {
     print('Exception when calling DefaultApi->postItemsUserItemsYyyyMmDdPost: $e\n');
 }
@@ -263,7 +263,7 @@ Name | Type | Description  | Notes
  **yyyy** | **int**|  | 
  **mm** | **int**|  | 
  **dd** | **int**|  | 
- **event** | **String**|  | 
+ **dayEventBody** | [**DayEventBody**](DayEventBody.md)|  | 
 
 ### Return type
 
@@ -275,7 +275,7 @@ void (empty response body)
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

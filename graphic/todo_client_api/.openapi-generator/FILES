@@ -2,6 +2,7 @@
 .travis.yml
 README.md
 analysis_options.yaml
+doc/DayEventBody.md
 doc/DefaultApi.md
 doc/HTTPValidationError.md
 doc/Token.md
@@ -17,7 +18,9 @@ lib/auth/authentication.dart
 lib/auth/http_basic_auth.dart
 lib/auth/http_bearer_auth.dart
 lib/auth/oauth.dart
+lib/model/day_event_body.dart
 lib/model/http_validation_error.dart
 lib/model/token.dart
 lib/model/validation_error.dart
 pubspec.yaml
+test/day_event_body_test.dart

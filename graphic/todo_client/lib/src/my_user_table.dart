@@ -128,10 +128,14 @@ class _MyItemDialog extends State<MyItemDialog> {
             onTap: () {
               String userName = userNameController.text;
               String password = passwordController.text;
-
-              // createUser
-              widget.rootData.createUser(userName, password, () => nG());
-
+              Future(() async {
+                try {
+                  // createUser
+                  await widget.rootData.createUser(userName, password);
+                } catch (e) {
+                  nG();
+                }
+              });
               Navigator.of(context).pop();
             },
           )

@@ -313,8 +313,8 @@ class DefaultApi {
   ///
   /// * [int] dd (required):
   ///
-  /// * [String] event (required):
-  Future<Response> postItemsUserItemsYyyyMmDdPostWithHttpInfo(int yyyy, int mm, int dd, String event,) async {
+  /// * [DayEventBody] dayEventBody (required):
+  Future<Response> postItemsUserItemsYyyyMmDdPostWithHttpInfo(int yyyy, int mm, int dd, DayEventBody dayEventBody,) async {
     // ignore: prefer_const_declarations
     final path = r'/items/{yyyy}/{mm}/{dd}'
       .replaceAll('{yyyy}', yyyy.toString())
@@ -322,15 +322,13 @@ class DefaultApi {
       .replaceAll('{dd}', dd.toString());
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = dayEventBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-      queryParams.addAll(_queryParams('', 'event', event));
-
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
@@ -354,9 +352,9 @@ class DefaultApi {
   ///
   /// * [int] dd (required):
   ///
-  /// * [String] event (required):
-  Future<void> postItemsUserItemsYyyyMmDdPost(int yyyy, int mm, int dd, String event,) async {
-    final response = await postItemsUserItemsYyyyMmDdPostWithHttpInfo(yyyy, mm, dd, event,);
+  /// * [DayEventBody] dayEventBody (required):
+  Future<void> postItemsUserItemsYyyyMmDdPost(int yyyy, int mm, int dd, DayEventBody dayEventBody,) async {
+    final response = await postItemsUserItemsYyyyMmDdPostWithHttpInfo(yyyy, mm, dd, dayEventBody,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

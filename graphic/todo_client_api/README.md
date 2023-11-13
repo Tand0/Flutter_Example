@@ -70,6 +70,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [DayEventBody](doc//DayEventBody.md)
  - [HTTPValidationError](doc//HTTPValidationError.md)
  - [Token](doc//Token.md)
  - [ValidationError](doc//ValidationError.md)

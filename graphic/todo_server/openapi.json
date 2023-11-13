@@ -265,17 +265,18 @@
               "type": "integer",
               "title": "Dd"
             }
-          },
-          {
-            "name": "event",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Event"
-            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayEventBody"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -357,6 +358,19 @@
           "password"
         ],
         "title": "Body_login_for_access_token_token_post"
+      },
+      "DayEventBody": {
+        "properties": {
+          "event": {
+            "type": "string",
+            "title": "Event"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event"
+        ],
+        "title": "DayEventBody"
       },
       "HTTPValidationError": {
         "properties": {
