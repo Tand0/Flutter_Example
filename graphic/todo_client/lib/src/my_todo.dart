@@ -165,10 +165,8 @@ class _MyCustomPainter extends CustomPainter {
     if (event == null) {
       return;
     }
-    print(copy);
     Future(() async {
       String text = event[5];
-      print(text);
       Clipboard.setData(ClipboardData(text: text));
     });
   }
