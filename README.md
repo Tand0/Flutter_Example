@@ -3106,7 +3106,7 @@ $ flutter pub add intl:any
 - わざわざグラフをハードコードしてとかめんどうなので、
   ぽちぽちクリックしたら叩けるようなものを作ってみました
   -  [ダイクストラ法による経路選択](./graphic/dijkstra/lib/src/root_data.dart)
-- こんな感じです。
+- [動作イメージはこんな感じです](https://tand0.github.io/Flutter_Example/dijkstra_web/index.html)
 
 ![ダイクストラ法による経路選択](./graphic/dijkstra/sample.png)
 
