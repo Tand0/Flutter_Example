@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'root_data.dart' as data;
 
@@ -357,7 +358,7 @@ class _MyItemDialog extends State<MyItemDialog> {
 
   @override
   Widget build(BuildContext context) {
-    myController.text = _number.toString();
+    myController.text = _number.toInt().toString();
     return AlertDialog(
       title: const Text('Create Link'),
       content: Text(
@@ -374,6 +375,10 @@ class _MyItemDialog extends State<MyItemDialog> {
                 width: 100,
                 child: TextField(
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(3),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     maxLines: null,
                     controller: myController))),
         GestureDetector(
@@ -386,6 +391,7 @@ class _MyItemDialog extends State<MyItemDialog> {
                     : max < _number
                         ? max
                         : _number;
+                _number = _number.toInt().toDouble();
               });
             }),
         Slider(

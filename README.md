@@ -127,6 +127,8 @@
   - [Flutter アプリの国際化](#flutter-アプリの国際化)
   - [クリップボードの取得と設定](#クリップボードの取得と設定)
   - [ダイクストラ法による経路選択](#ダイクストラ法による経路選択)
+    - [アルゴリズムについて](#アルゴリズムについて)
+    - [スライダー](#スライダー)
 
 
 
@@ -3108,14 +3110,16 @@ $ flutter pub add intl:any
 
 ![ダイクストラ法による経路選択](./graphic/dijkstra/sample.png)
 
-- 従来からの技術的なものはそろそろ枯渇した感じでしょうか
+
+### アルゴリズムについて
 - アルゴリズムとしては以下のような感じでやっています
-  - 始点を経路１のパスとしてパスのリストに積む
+  - 以前保存したクリティカルパスをクリアする
+  - 始点 Node-1 をパスとして「パスのリスト」に積む
   - ここから繰り返し
-    - パスのリストから w= が最小のパスを取り出して「パスのリスト」から消す
-    - 取り出した最小のパスの最後の Node-x が終点であるとき
+    - パスのリストから合計のw= が最小のパスを取り出して「パスのリスト」から消す
+    - 取り出した最小のパスの最後の Node-x が終点 Node-7 であるとき
       そのパスをクリティカルパスとして保存する
-      - すでにクリティカルパスがある場合、w= が最小のパスを生き残らせる
+      - すでにクリティカルパスがある場合、合計のw= が最小のパスを保存します
     - 取り出した最小のパスから到達できる次のパスを全て「パスのリスト」に積む
       - 具体的にいうと、例えば「Node-0」の次のパスは以下になります
         - Node-0 から Node-1  , w= 1
@@ -3128,18 +3132,107 @@ $ flutter pub add intl:any
         - 具体的に言うと、例えば「Node-0からNode-1」の次のパスに以下は含まれません
           - Node-0 から Node-1 から Node-0  , w= 2
     - パスのリストの中で、最後の Node-x がある場合は
-      w= が最小のパスを生き残らせ、残りのパスはパスのリストから除外します
-      - 具体的にいうと、例えば以下のパスは後者 w=7 が生き残ります
+      合計のw= が最小のパスを生き残らせ、残りのパスは「パスのリスト」から除外します
+      - 具体的にいうと、例えば以下は後者 w=7 のパスが生き残ります
         - Node-0 から Node-2 から Node-6  , w= 10
         - Node-0 から Node-3 から Node-6  , w= 7 
     - 「パスのリスト」からリストがなくなるか、
-      想定する最大経由する Node-1 数を超えたとき繰り返しをやめます
-  - クリティカルパスが存在する場合、それが最適な経路です
+      想定する最大経由する Node-x 数を超えたとき繰り返しをやめます
+  - クリティカルパスが保存されている場合、それが最適な経路です
 
 - 実際やってダメだったケースとしてはこんな感じでした
   - 始点と終点で経路がつながっていない
-    - なぜ経路が選択できないのだろう…
 
 
+### スライダー
 
+![スライダーのGUIイメージ](./graphic/dijkstra/slider.png)
 
+- こんな感じでリンクの重みづけをするときにスライダーを使ってみました
+- 0を指定するとNode-x を削除するようにしています
+
+```dart
+class MyItemDialog extends StatefulWidget {
+  final data.RootData rootData;
+  final data.Box selectedBox;
+  final data.Box linkedBox;
+  const MyItemDialog(
+      {Key? key,
+      required this.rootData,
+      required this.selectedBox,
+      required this.linkedBox})
+      : super(key: key);
+
+  @override
+  createState() => _MyItemDialog();
+}
+
+class _MyItemDialog extends State<MyItemDialog> {
+  final double min = 0;
+  final double max = 400;
+  double _number = 10;
+  final myController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    myController.text = _number.toInt().toString();
+    return AlertDialog(
+      title: const Text('Create Link'),
+      content: Text(
+          "From ${widget.selectedBox.nodeName} to ${widget.linkedBox.nodeName}"),
+      actions: <Widget>[
+        Align(
+          alignment: Alignment.topCenter,
+          child: Text("widget=${_number.toInt()}"),
+        ),
+        Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+                alignment: Alignment.center,
+                width: 100,
+                child: TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(3),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    maxLines: null,
+                    controller: myController))),
+        GestureDetector(
+            child: const Text('Update'),
+            onTap: () {
+              setState(() {
+                _number = double.parse(myController.text);
+                _number = _number < min
+                    ? min
+                    : max < _number
+                        ? max
+                        : _number;
+                _number = _number.toInt().toDouble();
+              });
+            }),
+        Slider(
+          value: _number,
+          min: min,
+          max: max,
+          onChanged: (value) {
+            setState(() {
+              _number = value;
+              myController.text = _number.toInt().toString();
+            });
+          },
+        ),
+        GestureDetector(
+            child: const Text('OK'),
+            onTap: () {
+              widget.rootData.createLink(
+                  widget.selectedBox, widget.linkedBox, _number.toInt());
+              widget.rootData.changedData();
+              //
+              Navigator.of(context).pop();
+            })
+      ],
+    );
+  }
+}
+```
