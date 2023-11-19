@@ -213,8 +213,8 @@ class _MyCustomPainter extends CustomPainter {
         data.Box boxA = rootData.getComponent()[aToZ];
         data.Box boxZ = rootData.getComponent()[zToA];
 
-        if ((rootData.criticalPath != null) &&
-            rootData.criticalPath!.linkList.contains(value)) {
+        if ((rootData.survivalPath != null) &&
+            rootData.survivalPath!.linkList.contains(value)) {
           paintX.strokeWidth = 3.0;
           paintX.color = Colors.red;
         } else {
@@ -246,8 +246,8 @@ class _MyCustomPainter extends CustomPainter {
       if (value is data.Box) {
         if (myCanvas.selectedBox == value) {
           paintX.color = Colors.pink;
-        } else if ((rootData.criticalPath != null) &&
-            rootData.criticalPath!.boxList.contains(value)) {
+        } else if ((rootData.survivalPath != null) &&
+            rootData.survivalPath!.boxList.contains(value)) {
           paintX.color = Colors.orange;
         } else {
           paintX.color = Colors.grey;

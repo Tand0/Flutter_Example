@@ -199,10 +199,10 @@ class RootData with ChangeNotifier {
     }
   }
 
-  Path? criticalPath;
+  Path? survivalPath;
   void dijkstra(Box aToZ, Box zToA) {
     // init
-    criticalPath = null;
+    survivalPath = null;
     List<Path> pathList = [];
     pathList.add(Path(0, aToZ, null, null));
     int maxHop = 30;
@@ -211,8 +211,8 @@ class RootData with ChangeNotifier {
       Path now = getMinWeightPath(pathList);
       pathList.remove(now);
       if (now.boxList.first == zToA) {
-        if ((criticalPath == null) || (now.weight < criticalPath!.weight)) {
-          criticalPath = now;
+        if ((survivalPath == null) || (now.weight < survivalPath!.weight)) {
+          survivalPath = now;
           continue;
         }
       }
