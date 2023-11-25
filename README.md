@@ -129,6 +129,7 @@
   - [ダイクストラ法による経路選択](#ダイクストラ法による経路選択)
     - [アルゴリズムについて](#アルゴリズムについて)
     - [スライダー](#スライダー)
+  - [NovelAI REST API を Fluuter で画像表示](#novelai-rest-api-を-fluuter-で画像表示)
 
 
 
@@ -3236,3 +3237,27 @@ class _MyItemDialog extends State<MyItemDialog> {
   }
 }
 ```
+
+
+## NovelAI REST API を Fluuter で画像表示
+
+<video controls playsinline width="50%" autoplay loop muted="true" src="./mynai/sample.mp4" type="video/mp4" >
+ Sorry, your browser doesn't support embedded videos.
+</video>
+
+- 最近は ChatGPT が流行りですが ChatGPT REST API と Flutter を接続する記事は結構出てきます
+- ところで NovelAI も REST API を持っているので
+  こちらも Flutter 接続する記事があるだろうと思って探したら無かったので作りました
+
+- ポイントとしては以下あたりでしょうか。
+  - ログイン時に blake2b を使う必要がある。[このあたりのソース](./mynai/lib/wrapper/for_blake2b.dart)
+  - ログイン時に argon2 を使う必要がある。[このあたりのソース](./mynai/lib/wrapper/for_argon2.dart)
+  - 画像は zip で渡させるので解凍する必要がある。[このあたりのソース](./mynai/lib/wrapper/mynai_client_wrapper.dart)
+
+- blake2b がうまく行かなくて [github のライブラリ作成者の人に修正お願いしたりした](https://github.com/riclava/blake2b/issues/8)
+  ので本当にやっている人は少なさそうです。
+  - 逆にいうとフロンティア状態。サブスクスク作ってログイン代行を行い、中間マージン取れば結構儲かりそう？？？
+  - やりたい人はテキトーにコード持って行ってください。 MIT License です。
+- https 呼び出しは基本ライブラリを直呼び出しです。
+  OpenAPI を使うことも考えましたが 現時点では dart 版は変換戻りとかまだまだバギーで無理でした。2023/11/25
+
