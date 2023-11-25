@@ -3241,9 +3241,7 @@ class _MyItemDialog extends State<MyItemDialog> {
 
 ## NovelAI REST API を Fluuter で画像表示
 
-<video controls playsinline width="50%" autoplay loop muted="true" src="./mynai/sample.mp4" type="video/mp4" >
- Sorry, your browser doesn't support embedded videos.
-</video>
+https://github.com/Tand0/Flutter_Example/assets/17945245/0a6f6b82-c096-490e-be3d-740f1d86248b
 
 - 最近は ChatGPT が流行りですが ChatGPT REST API と Flutter を接続する記事は結構出てきます
 - ところで NovelAI も REST API を持っているので
